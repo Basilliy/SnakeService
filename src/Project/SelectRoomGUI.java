@@ -21,7 +21,7 @@ public class SelectRoomGUI extends JFrame{
 
     private File rooms = new File("src/Data/Servers.txt");
     private ArrayList<ListItem> list;
-    private final static int PORT = 55000;
+    private final static int PORT = Const.PORT;
 
 
     public SelectRoomGUI() {
@@ -56,7 +56,7 @@ public class SelectRoomGUI extends JFrame{
         buttonDeleteRoom.addActionListener(e -> deleteRoom(listRoom.getSelectedIndex()));
     }
 
-    private void writeRoom(String ip){
+    private void writeRoom(String ip) {
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter(rooms, true));
             writer.write(ip);

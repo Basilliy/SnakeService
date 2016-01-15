@@ -30,11 +30,8 @@ public class ServerThread extends Thread {
                     player = (Player) object;
                     if (bName) {
                         bName = false;
-                        synchronized (players) {
-                            players.add(player);
-                        }
+                        synchronized (players) { players.add(player); }
                         synchronized (oos) {
-
                             for (ObjectOutputStream out : oos) {
                                 out.writeObject(Const.STATUS + createStatus());
                                 out.writeObject(Const.CHAT + "В комнату вошел игрок " + player.getName() + "\n");
@@ -59,7 +56,7 @@ public class ServerThread extends Thread {
                     }
                 }
             } catch (IOException | ClassNotFoundException e) {
-                synchronized (players){
+                synchronized (players) {
                     players.remove(player);
                 }
                 synchronized (oos) {

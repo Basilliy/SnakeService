@@ -23,7 +23,7 @@ public class ServerController extends Thread {
             ServerSocket serverSocket = new ServerSocket(PORT);
             while (listening) {
                 boolean b;
-                synchronized (oos) { b = oos.size() < 2; }
+                synchronized (oos) { b = oos.size() < 8; }
                 Socket socket = serverSocket.accept();
                 ObjectOutputStream socketOOS = new ObjectOutputStream(socket.getOutputStream());
                 ObjectInputStream socketOIS = new ObjectInputStream(socket.getInputStream());
