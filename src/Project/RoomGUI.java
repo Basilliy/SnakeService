@@ -68,10 +68,17 @@ public class RoomGUI extends JFrame implements Runnable {
     private void createGame() {
         try {
             out.writeObject(Const.START);
+            out.reset();
         } catch (IOException e) { e.printStackTrace(); }
     }
 
     private void startGame() {
+        System.out.println("Game is started");
+        if (server) {
+            System.out.println("it is server");
+            ServerController.setGameIsStarted(true);
+        }
+
         working = false;
         RoomGUI.this.setVisible(false);
         GameGUI gameGUI = new GameGUI(player, out, in, server, RoomGUI.this);
@@ -83,6 +90,7 @@ public class RoomGUI extends JFrame implements Runnable {
         if (!chatTextField.getText().equals("")) {
             try {
                 out.writeObject(Const.CHAT + player.getName() + ": " + chatTextField.getText() + "\n");
+                out.reset();
             } catch (IOException e) { e.printStackTrace(); }
             JScrollBar scrollBar = chatScroll.getVerticalScrollBar();
             scrollBar.setValue(scrollBar.getMaximum());
@@ -94,6 +102,7 @@ public class RoomGUI extends JFrame implements Runnable {
         player = new Player(player.getName(), player.getAddress(), !player.isReady());
         try {
             out.writeObject(player);
+            out.reset();
         } catch (IOException e) { e.printStackTrace(); }
     }
 
@@ -123,6 +132,7 @@ public class RoomGUI extends JFrame implements Runnable {
     public void run() {
         try {
             out.writeObject(player);
+            out.reset();
         } catch (IOException se) { /*Nothing TO DO */ }
         while (working) {
             try {

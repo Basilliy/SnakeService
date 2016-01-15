@@ -40,6 +40,7 @@
             </constraints>
             <properties>
               <text value="Label"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="6dec0" class="javax.swing.JLabel" binding="place2st">
@@ -48,6 +49,7 @@
             </constraints>
             <properties>
               <text value="Label"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="f78ae" class="javax.swing.JLabel" binding="place3st">
@@ -56,6 +58,7 @@
             </constraints>
             <properties>
               <text value="Label"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="11dd1" class="javax.swing.JLabel" binding="place4st">
@@ -64,6 +67,7 @@
             </constraints>
             <properties>
               <text value="Label"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="a7bf6" class="javax.swing.JLabel" binding="place5st">
@@ -72,6 +76,7 @@
             </constraints>
             <properties>
               <text value="Label"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="a8208" class="javax.swing.JLabel" binding="place6st">
@@ -80,6 +85,7 @@
             </constraints>
             <properties>
               <text value="Label"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="ea52c" class="javax.swing.JLabel" binding="place7st">
@@ -88,6 +94,7 @@
             </constraints>
             <properties>
               <text value="Label"/>
+              <visible value="false"/>
             </properties>
           </component>
           <component id="e76f3" class="javax.swing.JLabel" binding="place8st">
@@ -96,6 +103,7 @@
             </constraints>
             <properties>
               <text value="Label"/>
+              <visible value="false"/>
             </properties>
           </component>
           <grid id="1a7e6" binding="notationForServer" layout-manager="GridLayoutManager" row-count="4" column-count="1" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">

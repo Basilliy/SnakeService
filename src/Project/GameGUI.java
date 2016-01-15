@@ -3,6 +3,8 @@ package Project;
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.util.Arrays;
@@ -21,10 +23,11 @@ public class GameGUI extends JFrame implements Runnable {
     private JPanel notationForServer;
 
 
-    private Player player;
     private ObjectOutputStream out;
     private ObjectInputStream in;
     private boolean working = true;
+    private boolean canChangeWay = false;
+    private int way;
     private int[][] board = new int[Const.RESTRICTIONS_MAX.x / Const.DELAY]
             [Const.RESTRICTIONS_MAX.y / Const.DELAY];
     private JLabel[] labels = new JLabel[8];
@@ -42,7 +45,6 @@ public class GameGUI extends JFrame implements Runnable {
         notationForServer.setVisible(server);
         this.out = out;
         this.in = in;
-        this.player = player;
 
         try {
             body0 = ImageIO.read(new File(Const.PATH + "body.png"));
@@ -60,6 +62,8 @@ public class GameGUI extends JFrame implements Runnable {
         gamePanel.setSize(Const.RESTRICTIONS_MAX.x, Const.RESTRICTIONS_MAX.y);
         gamePanel.setMinimumSize(gamePanel.getSize());
         gamePanel.setMaximumSize(gamePanel.getSize());
+        gamePanel.setFocusable(true);
+        gamePanel.addKeyListener(new myKeyAdapter());
 
         setLocationRelativeTo(owner);
         setTitle("SnakeService - " + player.getName());
@@ -81,74 +85,96 @@ public class GameGUI extends JFrame implements Runnable {
     @Override
     public void run() {
 
-        int[][] ints = new int[][]{
-                {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-                {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-                {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-                {0,  0,  0,  0,  0,  14, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-                {0,  0,  0,  0,  0,  14, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-                {0,  0, -1,  0,  0,  14, 0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-                {0,  0,  0,  0,  0,  14, 14, 12, 0,  0,  0,  0,  0,  0,  0,  0},
-                {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-                {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-                {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-                {0,  0,  0,  0,  0,  0,  21, 24, 24, 24, 0,  0,  0,  0,  0,  0},
-                {0,  0,  0,  0,  0,  0,  0,  0,  0,  24, 0,  0,  0,  0,  0,  0},
-                {0,  0, -1,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-                {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-                {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0},
-                {0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0,  0}
-        };
-        String st = createMap(ints);
-        try {
-            out.writeObject(st);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        //Тестовый код:Начало
+        /*
+        {
+            int[][] ints = new int[][]{
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, -1, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 21, 24, 24, 24, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0},
+                    {0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
+                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+            };
 
+            int[] sc = new int[4];
+            String[] n = new String[4];
+
+            sc[0] = 4;
+            sc[1] = 2;
+            sc[2] = 6;
+            sc[3] = 4;
+
+            n[0] = "rik";
+            n[1] = "fgd";
+            n[2] = "ggg";
+            n[3] = "bas";
+
+            Score score = new Score(sc, n);
+            score.addScore(-40, "bas");
+            System.out.println("before1: " + Arrays.toString(score.getScore()));
+
+            try {
+                out.writeObject(score);
+                out.reset();
+                out.writeObject(new Board(ints));
+                out.reset();
+                score.addScore(30, "bas"); // -6
+                System.out.println("before2: " + Arrays.toString(score.getScore()));
+                out.writeObject(score);
+                out.reset();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        */
+        //Тестовый код:Конец
 
         while (working) {
             try {
                 Object object = in.readObject();
+                if (object.getClass().equals(Board.class)) {
+                    board = ((Board) object).getBoard();
+                    repaintBoard();
+                } else
+                if (object.getClass().equals(Score.class)) {
+                    setScore(((Score) object).getScore());
+                } else
                 if (object.getClass().equals(String.class)) {
                     String s = (String) object;
-                    System.out.println(s);
-                    if (s.startsWith(Const.BOARD)) {
-                        s = s.substring(Const.BOARD.length());
-                        board = readBoard(s);
-                        repaintBoard();
-                    }
-                    if (s.startsWith(Const.STATUS)) {
-                        s = s.substring(Const.STATUS.length());
-                        setScore(s);
-                    }
-                } else System.out.println("Другой тип");
+                    s = s.substring(Const.STATUS.length());
+                    JOptionPane.showMessageDialog(this, s);
+                } else
+                if (object.getClass().equals(Integer.class)) {
+                    int i = (int) object;
+                    System.out.println("int: " + i);
+                } else
+                    System.out.println("Не поддерживается - " + object.getClass());
             } catch (Exception e) {
-                e.printStackTrace();
+                JOptionPane.showMessageDialog(GameGUI.this, "Сервер отключился");
+                System.exit(0);
+                break;
             }
         }
     }
 
-    private void setScore(String s) {
+    private void setScore(String[] s) {
+//        System.out.println("Arrays: " + Arrays.toString(s));
         for (JLabel label: labels) label.setVisible(false);
-        String[] split = s.split(";");
-        for (int i = 0; i < split.length; i++) {
+        for (int i = 0; i < s.length; i++) {
             labels[i].setVisible(true);
-            String[] strings = split[i].split(",");
-            labels[i].setText(strings[0] + " " + strings[1]);
+            labels[i].setText(s[i]);
         }
-    }
-
-    private int[][] readBoard(String s) {
-        String[] split = s.split(";");
-        int[][] map = new int[split.length][split[0].length() / 2 + 1];
-        for (int i = 0; i < map.length; i++) {
-            String[] strings = split[i].split(",");
-            for (int j = 0; j < map[0].length; j++) {
-                map[i][j] = Integer.parseInt(strings[j]);
-            }
-        }
-        return map;
     }
 
     private void repaintBoard() {
@@ -186,20 +212,27 @@ public class GameGUI extends JFrame implements Runnable {
 
         Graphics graphics = gamePanel.getGraphics();
         graphics.drawImage(backgroundImage, 0, 0, null);
+        canChangeWay = true;
     }
 
-
-    private String createMap(int[][] n) {
-        StringBuilder sb = new StringBuilder();
-        sb.append(Const.BOARD);
-        for (int[] aN : n) {
-            for (int j = 0; j < n[0].length; j++) {
-                sb.append(aN[j]);
-                if (j != n[0].length - 1)
-                    sb.append(",");
-            }
-            sb.append(";");
+    private class myKeyAdapter extends KeyAdapter {
+        public void keyPressed(KeyEvent e) {
+            int i;
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_W: i = Const.UP; break;
+                    case KeyEvent.VK_A: i = Const.LEFT; break;
+                    case KeyEvent.VK_S: i = Const.DOWN; break;
+                    case KeyEvent.VK_D: i = Const.RIGHT; break;
+                    default: i = 0;
+                }
+                    way = i;
+                    try {
+                        out.writeObject(canChangeWay);
+                        out.writeObject(way);
+                        out.reset();
+                        canChangeWay = false;
+                    } catch (IOException e1) { e1.printStackTrace(); }
         }
-        return sb.toString();
     }
+
 }
