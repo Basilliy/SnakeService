@@ -26,7 +26,6 @@ public class ServerController extends Thread {
     }
 
     public void run() {
-        System.out.println("ServerController is started");
         try {
             ServerSocket serverSocket = new ServerSocket(PORT);
             while (listening) {
@@ -40,7 +39,6 @@ public class ServerController extends Thread {
                         synchronized (oos) {
                             oos.add(socketOOS);
                         }
-                        System.out.println("ServerThread " + oos.size());
                         ServerThread readerThread = new ServerThread(oos, socketOIS, socketOOS, players, ways);
                         readerThread.start();
                     } else {

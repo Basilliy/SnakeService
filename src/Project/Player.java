@@ -7,11 +7,13 @@ public class Player implements Serializable {
     private final String name;
     private final String address;
     private boolean ready;
+    private int positionOnMap;
 
-    public Player(String name, String address, boolean ready){
+    public Player(String name, String address, boolean ready, int positionOnMap){
         this.name = name;
         this.address = address;
         this.ready = ready;
+        this.positionOnMap = positionOnMap;
     }
 
     public String getName() {
@@ -28,5 +30,13 @@ public class Player implements Serializable {
 
     public void setReady(boolean ready) {
         this.ready = ready;
+    }
+
+    public int getPositionOnMap() {
+        return positionOnMap;
+    }
+
+    public void setPositionOnMap(int positionOnMap) {
+        this.positionOnMap = positionOnMap;
     }
 }

@@ -22,6 +22,7 @@ public class RoomGUI extends JFrame implements Runnable {
     private JTable roomTable;
     private JButton roomButtonReady;
     private JButton roomButtonStartGame;
+    private JComboBox<String> roomComboBox;
 
     private Player player;
     private ObjectOutputStream out;
@@ -39,11 +40,20 @@ public class RoomGUI extends JFrame implements Runnable {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(owner);
         roomButtonStartGame.setVisible(server);
+        roomComboBox.addItem("0.Не выбрано");
+        roomComboBox.addItem("1.Сверху-слева");
+        roomComboBox.addItem("2.Сверху-центр");
+        roomComboBox.addItem("3.Сверху-справа");
+        roomComboBox.addItem("4.Центр-справа");
+        roomComboBox.addItem("5.Снизу-справа");
+        roomComboBox.addItem("6.Снизу-центр");
+        roomComboBox.addItem("7.Снизу-слева");
+        roomComboBox.addItem("8.Центр-слева");
         try {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
             bottomLabel.setText(name + " (" + InetAddress.getLocalHost() + ")");
-            player = new Player(name, InetAddress.getLocalHost().getHostAddress(), false);
+            player = new Player(name, InetAddress.getLocalHost().getHostAddress(), false, Const.MAP_NOT_CHOSEN);
         } catch (IOException e) {
             JOptionPane.showMessageDialog(RoomGUI.this, "Ошибка подключения");
             System.exit(0);
@@ -73,11 +83,7 @@ public class RoomGUI extends JFrame implements Runnable {
     }
 
     private void startGame() {
-        System.out.println("Game is started");
-        if (server) {
-            System.out.println("it is server");
-            ServerController.setGameIsStarted(true);
-        }
+        if (server) ServerController.setGameIsStarted(true);
 
         working = false;
         RoomGUI.this.setVisible(false);
@@ -99,7 +105,7 @@ public class RoomGUI extends JFrame implements Runnable {
     }
 
     private void setReady() {
-        player = new Player(player.getName(), player.getAddress(), !player.isReady());
+        player.setReady(!player.isReady());
         try {
             out.writeObject(player);
             out.reset();
@@ -107,15 +113,14 @@ public class RoomGUI extends JFrame implements Runnable {
     }
 
     private void updatePlayers() {
-        String[] columnNames = new String[]{"Номер", "Имя", "Адресс", "Готовность"};
-        Object[][] obj = new Object[players.size()][4];
+        String[] columnNames = new String[]{"Имя", "Адресс", "Готовность"};
+        Object[][] obj = new Object[players.size()][3];
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
-            obj[i][0] = i+1;
-            obj[i][1] = p.getName();
-            obj[i][2] = p.getAddress();
-            if (p.isReady()) obj[i][3] = "Готов";
-            else obj[i][3] = "Не готов";
+            obj[i][0] = p.getName();
+            obj[i][1] = p.getAddress();
+            if (p.isReady()) obj[i][2] = "Готов";
+            else obj[i][2] = "Не готов";
         }
         DefaultTableModel model = new DefaultTableModel(obj, columnNames);
         roomTable.setModel(model);

@@ -20,22 +20,14 @@ public class Const {
     public static final Point RESTRICTIONS_MAX = new Point(256, 256); // Верхнее ограничение
     public static final Point RESTRICTIONS_MIN = new Point(0, 0); // Нижнее ограничение
 
-
-
-
-//    String t = Const.STATUS + "54,bas;46,fff;32,tttt;";
-
-
-
-//    private String createMap(int[][] n) {
-//        StringBuilder sb = new StringBuilder();
-//        sb.append(Const.BOARD);
-//        for (int[] aN : n) {
-//            for (int j = 0; j < n[0].length; j++) {
-//                sb.append(aN[j] + ",");
-//            }
-//            sb.append(";");
-//        }
-//        return sb.toString();
-//    }
+    //Константы позиций на карте
+    public static final int MAP_NOT_CHOSEN = 0;
+    public static final int MAP_UP_LEFT = 1;
+    public static final int MAP_UP = 2;
+    public static final int MAP_UP_RIGHT = 3;
+    public static final int MAP_RIGHT = 4;
+    public static final int MAP_DOWN_RIGHT = 5;
+    public static final int MAP_DOWN = 6;
+    public static final int MAP_DOWN_LEFT = 7;
+    public static final int MAP_LEFT = 8;
 }
