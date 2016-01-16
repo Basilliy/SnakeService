@@ -188,7 +188,6 @@ public class SelectRoomGUI extends JFrame{
     }
 
     public static void main(String... console) throws Exception {
-        System.out.println("Started");
 //        Player player = new Player("Basill", null, false);
 //        GameGUI gameGUI = new GameGUI(player, null, null, true, null);
 //        Thread thread = new Thread(gameGUI);
