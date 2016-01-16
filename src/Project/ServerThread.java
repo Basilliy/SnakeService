@@ -49,6 +49,7 @@ public class ServerThread extends Thread {
                 } else
                 if (object.getClass().equals(Player.class)) {
                     player = (Player) object;
+                    System.out.println(player.getName() + " " + player.isReady());
                     if (bName) {
                         bName = false;
                         synchronized (players) {
@@ -90,14 +91,17 @@ public class ServerThread extends Thread {
                 }
             } catch (IOException | ClassNotFoundException e) {
                 synchronized (players) {
-                    for (Player p : players)
+                    for (Player p : players) {
                         if (p.getName().equals(player.getName())) {
-                            players.remove(p); break;
+                            players.remove(p);
+                            break;
                         }
+                    }
                 }
                 synchronized (oos) {
                     oos.remove(out);
                     e.printStackTrace();
+                    System.out.println("ServerThread " + oos.size() + " Deleted " + player.getName());
                     for (ObjectOutputStream out : oos) {
                         try {
                             out.writeObject(players);
@@ -120,11 +124,12 @@ public class ServerThread extends Thread {
                 for (Player p : players) {
                     trip &= !p.getName().equals(name);
                 }
-                if (trip) return new Player(name, player.getAddress(), player.isReady(), player.getPositionOnMap());
+                if (trip) return new Player(name, player.getAddress(), player.isReady());
                 else {
                     name = player.getName() + postfix++;
                 }
             }
         }
     }
+
 }
