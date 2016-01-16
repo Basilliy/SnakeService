@@ -1,4 +1,8 @@
-package Project;
+package Project.GUI;
+
+import Project.Const;
+import Project.SentObjects.Player;
+import Project.ServerController;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -40,15 +44,15 @@ public class RoomGUI extends JFrame implements Runnable {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(owner);
         roomButtonStartGame.setVisible(server);
-        roomComboBox.addItem("0.Не выбрано");
-        roomComboBox.addItem("1.Сверху-слева");
-        roomComboBox.addItem("2.Сверху-центр");
-        roomComboBox.addItem("3.Сверху-справа");
-        roomComboBox.addItem("4.Центр-справа");
-        roomComboBox.addItem("5.Снизу-справа");
-        roomComboBox.addItem("6.Снизу-центр");
-        roomComboBox.addItem("7.Снизу-слева");
-        roomComboBox.addItem("8.Центр-слева");
+        roomComboBox.addItem(Const.STRING_NOT_CHOSEN);
+        roomComboBox.addItem(Const.STRING_UP_LEFT);
+        roomComboBox.addItem(Const.STRING_UP);
+        roomComboBox.addItem(Const.STRING_UP_RIGHT);
+        roomComboBox.addItem(Const.STRING_RIGHT);
+        roomComboBox.addItem(Const.STRING_DOWN_RIGHT);
+        roomComboBox.addItem(Const.STRING_DOWN);
+        roomComboBox.addItem(Const.STRING_DOWN_LEFT);
+        roomComboBox.addItem(Const.STRING_LEFT);
         try {
             out = new ObjectOutputStream(socket.getOutputStream());
             in = new ObjectInputStream(socket.getInputStream());
@@ -58,8 +62,9 @@ public class RoomGUI extends JFrame implements Runnable {
             JOptionPane.showMessageDialog(RoomGUI.this, "Ошибка подключения");
             System.exit(0);
         }
-        roomButtonStartGame.addActionListener(e2 -> createGame());
-        roomButtonReady.addActionListener(e1 -> setReady());
+        roomComboBox.addActionListener(e -> changePosition(roomComboBox.getSelectedIndex()));
+        roomButtonStartGame.addActionListener(e -> createGame());
+        roomButtonReady.addActionListener(e -> setReady());
         chatButtonEnter.addActionListener(e -> {
             enterText();
             chatTextField.setFocusable(true);
@@ -104,23 +109,52 @@ public class RoomGUI extends JFrame implements Runnable {
         }
     }
 
-    private void setReady() {
-        player.setReady(!player.isReady());
+    private void changePosition(int position) {
+        player.setPositionOnMap(position);
+        System.out.println("Position canged to " + player.getPositionOnMap());
         try {
             out.writeObject(player);
             out.reset();
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setReady() {
+        if (player.getPositionOnMap() != Const.MAP_NOT_CHOSEN) {
+            player.setReady(!player.isReady());
+            roomComboBox.setEnabled(!player.isReady());
+            try {
+                out.writeObject(player);
+                out.reset();
+            } catch (IOException ignored) {}
+        } else {
+            JOptionPane.showMessageDialog(RoomGUI.this, "Для начала игры необходимо выбрать стартовую позицию");
+        }
     }
 
     private void updatePlayers() {
-        String[] columnNames = new String[]{"Имя", "Адресс", "Готовность"};
-        Object[][] obj = new Object[players.size()][3];
+        String[] columnNames = new String[]{"Имя", "Адресс", "Готовность", "Позиция"};
+        Object[][] obj = new Object[players.size()][4];
         for (int i = 0; i < players.size(); i++) {
             Player p = players.get(i);
             obj[i][0] = p.getName();
             obj[i][1] = p.getAddress();
             if (p.isReady()) obj[i][2] = "Готов";
             else obj[i][2] = "Не готов";
+            String position;
+            switch (p.getPositionOnMap()) {
+                case Const.MAP_UP_LEFT: position = Const.STRING_UP_LEFT; break;
+                case Const.MAP_UP: position = Const.STRING_UP; break;
+                case Const.MAP_UP_RIGHT: position = Const.STRING_UP_RIGHT; break;
+                case Const.MAP_RIGHT: position = Const.STRING_RIGHT; break;
+                case Const.MAP_DOWN_RIGHT: position = Const.STRING_DOWN_RIGHT; break;
+                case Const.MAP_DOWN: position = Const.STRING_DOWN; break;
+                case Const.MAP_DOWN_LEFT: position = Const.STRING_DOWN_LEFT; break;
+                case Const.MAP_LEFT: position = Const.STRING_LEFT; break;
+                default: position = Const.STRING_NOT_CHOSEN;
+            }
+            obj[i][3] = position;
         }
         DefaultTableModel model = new DefaultTableModel(obj, columnNames);
         roomTable.setModel(model);
@@ -174,13 +208,11 @@ public class RoomGUI extends JFrame implements Runnable {
                     System.out.println("RoomGUI: Not supported " + object.getClass());
                 Thread.yield();
             } catch (Exception e) {
-                e.printStackTrace();
                 JOptionPane.showMessageDialog(RoomGUI.this, "Сервер отключился");
                 System.exit(0);
                 break;
             }
         }
     }
-
 
 }

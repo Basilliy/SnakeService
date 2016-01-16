@@ -1,4 +1,4 @@
-package Project;
+package Project.SentObjects;
 
 import java.io.Serializable;
 

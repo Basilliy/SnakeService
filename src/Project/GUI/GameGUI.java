@@ -1,4 +1,9 @@
-package Project;
+package Project.GUI;
+
+import Project.SentObjects.Board;
+import Project.Const;
+import Project.SentObjects.Player;
+import Project.SentObjects.Score;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -7,7 +12,6 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.io.*;
-import java.util.Arrays;
 
 public class GameGUI extends JFrame implements Runnable {
     private JPanel mainPanel;

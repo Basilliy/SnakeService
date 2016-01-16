@@ -1,5 +1,7 @@
 package Project;
 
+import Project.SentObjects.Player;
+
 import java.io.*;
 import java.util.ArrayList;
 
@@ -57,36 +59,31 @@ public class ServerThread extends Thread {
                             out.reset();
                             players.add(player);
                         }
-                        synchronized (oos) {
-                            for (ObjectOutputStream out : oos) {
-                                out.writeObject(players);
-                                out.writeObject(Const.CHAT + "В комнату вошел игрок " + player.getName() + "\n");
-                                out.reset();
-                            }
-                        }
+                        sendAll(players);
+                        sendAll(Const.CHAT + "В комнату вошел игрок " + player.getName() + "\n");
                     } else {
                         synchronized (players) {
                             for (Player p: players) {
                                 if (p.getName().equals(player.getName())) {
                                     p.setReady(player.isReady());
-                                    synchronized (oos) {
-                                        for (ObjectOutputStream out : oos) {
-                                            out.writeObject(players);
-                                            out.reset();
-                                        }
-                                    }
+                                    p.setPositionOnMap(player.getPositionOnMap());
+                                    sendAll(players);
                                     break;
                                 }
                             }
                         }
                     }
-                } else {
-                    synchronized (oos) {
-                        for (ObjectOutputStream out : oos) {
-                            out.writeObject(object);
-                            out.reset();
-                        }
+                } else if (object.getClass().equals(String.class)) {
+                    String s = (String) object;
+                    if (s.startsWith(Const.START)) {
+                        if (checkPlayersPositions()) sendAll(Const.START);
+                        else sendAll(Const.CHAT + "<Сервер>:Начальные позиции всех " +
+                                "игроков должны быть выбраны\n и не должны совпадать\n");
+                    } else {
+                        sendAll(object);
                     }
+                } else {
+                    sendAll(object);
                 }
             } catch (IOException | ClassNotFoundException e) {
                 synchronized (players) {
@@ -95,20 +92,34 @@ public class ServerThread extends Thread {
                             players.remove(p); break;
                         }
                 }
-                synchronized (oos) {
-                    oos.remove(out);
-                    e.printStackTrace();
-                    for (ObjectOutputStream out : oos) {
-                        try {
-                            out.writeObject(players);
-                            out.writeObject(Const.CHAT + "Игрок " + player.getName() + " покинул комнату\n");
-                            out.reset();
-                        } catch (IOException e1) { /*Nothing TO DO */ }
-                    }
-                }
+                synchronized (oos) { oos.remove(out); }
+                sendAll(players);
+                sendAll(Const.CHAT + "Игрок " + player.getName() + " покинул комнату\n");
                 break;
             }
         }
+    }
+
+    private void sendAll(Object message) {
+        synchronized (oos) {
+            try {
+                for (ObjectOutputStream out : oos) {
+                    out.writeObject(message);
+                    out.reset();
+                }
+            } catch (IOException ignored) { }
+        }
+    }
+
+    private boolean checkPlayersPositions() {
+        boolean check = true;
+        for (int i = 0; i < players.size(); i++) {
+            int checkingPosition = players.get(i).getPositionOnMap();
+            check &= checkingPosition != Const.MAP_NOT_CHOSEN;
+            for (int j = 0; j < players.size(); j++)
+                if (i != j) check &= checkingPosition != players.get(j).getPositionOnMap();
+        }
+        return check;
     }
 
     private Player checkPlayerName(Player player) {

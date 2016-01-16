@@ -1,4 +1,7 @@
-package Project;
+package Project.GUI;
+
+import Project.Const;
+import Project.ServerController;
 
 import javax.swing.*;
 import java.awt.*;

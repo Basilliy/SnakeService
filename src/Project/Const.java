@@ -30,4 +30,14 @@ public class Const {
     public static final int MAP_DOWN = 6;
     public static final int MAP_DOWN_LEFT = 7;
     public static final int MAP_LEFT = 8;
+    public static final String STRING_NOT_CHOSEN = MAP_NOT_CHOSEN + ".Не выбрано";
+    public static final String STRING_UP_LEFT = MAP_UP_LEFT + ".Сверху-слева";
+    public static final String STRING_UP = MAP_UP + ".Сверху-центр";
+    public static final String STRING_UP_RIGHT = MAP_UP_RIGHT + ".Сверху-справа";
+    public static final String STRING_RIGHT = MAP_RIGHT + ".Центр-справа";
+    public static final String STRING_DOWN_RIGHT = MAP_DOWN_RIGHT + ".Снизу-справа";
+    public static final String STRING_DOWN = MAP_DOWN + ".Снизу-центр";
+    public static final String STRING_DOWN_LEFT = MAP_DOWN_LEFT + ".Снизу-слева";
+    public static final String STRING_LEFT = MAP_LEFT + ".Центр-слева";
+
 }
