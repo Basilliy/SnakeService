@@ -26,7 +26,7 @@ public class RoomGUI extends JFrame implements Runnable {
     private Player player;
     private ObjectOutputStream out;
     private ObjectInputStream in;
-    private ArrayList players = new ArrayList<>();
+    private ArrayList<Player> players = new ArrayList<>();
     private boolean server;
     private boolean working = true;
 
@@ -110,7 +110,7 @@ public class RoomGUI extends JFrame implements Runnable {
         String[] columnNames = new String[]{"Номер", "Имя", "Адресс", "Готовность"};
         Object[][] obj = new Object[players.size()][4];
         for (int i = 0; i < players.size(); i++) {
-            Player p = (Player) players.get(i);
+            Player p = players.get(i);
             obj[i][0] = i+1;
             obj[i][1] = p.getName();
             obj[i][2] = p.getAddress();
@@ -120,12 +120,13 @@ public class RoomGUI extends JFrame implements Runnable {
         DefaultTableModel model = new DefaultTableModel(obj, columnNames);
         roomTable.setModel(model);
 
-        boolean b = true;
-        for (Object o: players) {
-            Player p = (Player) o;
-            b &= p.isReady();
+        if (server) {
+            boolean b = true;
+            for (Player o : players) {
+                b &= o.isReady();
+            }
+            roomButtonStartGame.setEnabled(b);
         }
-        roomButtonStartGame.setEnabled(b);
     }
 
     @Override
@@ -137,6 +138,14 @@ public class RoomGUI extends JFrame implements Runnable {
         while (working) {
             try {
                 Object object = in.readObject();
+                if (object.getClass().equals(Player.class)) {
+                    player = (Player) object;
+                    bottomLabel.setText(player.getName() + " (" + InetAddress.getLocalHost() + ")");
+                } else
+                if (object.getClass().equals(ArrayList.class)) {
+                    players = (ArrayList<Player>) object;
+                    updatePlayers();
+                } else
                 if (object.getClass().equals(String.class)) {
                     String s = (String) object;
                     if (s.startsWith(Const.START)) {//Если сообщение старта игры
@@ -156,18 +165,8 @@ public class RoomGUI extends JFrame implements Runnable {
                             scrollBar.setValue(scrollBar.getMaximum());
                         }
                     }
-                    if (s.startsWith(Const.STATUS)) { //Если сообщение сатуса
-                        s = s.substring(Const.STATUS.length(), s.length());
-                        players = new ArrayList();
-                        String[] split = s.split(";");
-                        for (String st : split) {
-                            String[] strings = st.split(",");
-                            Player p = new Player(strings[0], strings[1], strings[2].equals("true"));
-                            players.add(p);
-                            updatePlayers();
-                        }
-                    }
-                }
+                } else
+                    System.out.println("RoomGUI: Not supported " + object.getClass());
                 Thread.yield();
             } catch (Exception e) {
                 e.printStackTrace();

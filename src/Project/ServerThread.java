@@ -8,7 +8,7 @@ public class ServerThread extends Thread {
     public boolean listening = true;
     private final ArrayList<ObjectOutputStream> oos;
     private final ObjectInputStream in;
-    private final ObjectOutputStream forRemove;
+    private final ObjectOutputStream out;
     private final ArrayList<Player> players;
     private Player player;
     private int[] ways;
@@ -17,7 +17,7 @@ public class ServerThread extends Thread {
                         ObjectOutputStream forRemove, ArrayList<Player> players, int[] ways) {
         this.oos = oos;
         this.in = in;
-        this.forRemove = forRemove;
+        this.out = forRemove;
         this.players = players;
         this.ways = ways;
     }
@@ -49,12 +49,18 @@ public class ServerThread extends Thread {
                 } else
                 if (object.getClass().equals(Player.class)) {
                     player = (Player) object;
+                    System.out.println(player.getName() + " " + player.isReady());
                     if (bName) {
                         bName = false;
-                        synchronized (players) { players.add(player); }
+                        synchronized (players) {
+                            player = checkPlayerName(player);
+                            out.writeObject(player);
+                            out.reset();
+                            players.add(player);
+                        }
                         synchronized (oos) {
                             for (ObjectOutputStream out : oos) {
-                                out.writeObject(Const.STATUS + createStatus());
+                                out.writeObject(players);
                                 out.writeObject(Const.CHAT + "В комнату вошел игрок " + player.getName() + "\n");
                                 out.reset();
                             }
@@ -66,8 +72,8 @@ public class ServerThread extends Thread {
                                     p.setReady(player.isReady());
                                     synchronized (oos) {
                                         for (ObjectOutputStream out : oos) {
+                                            out.writeObject(players);
                                             out.reset();
-                                            out.writeObject(Const.STATUS + createStatus());
                                         }
                                     }
                                     break;
@@ -85,15 +91,20 @@ public class ServerThread extends Thread {
                 }
             } catch (IOException | ClassNotFoundException e) {
                 synchronized (players) {
-                    players.remove(player);
+                    for (Player p : players) {
+                        if (p.getName().equals(player.getName())) {
+                            players.remove(p);
+                            break;
+                        }
+                    }
                 }
                 synchronized (oos) {
-                    oos.remove(forRemove);
+                    oos.remove(out);
                     e.printStackTrace();
-                    System.out.println("ServerThread " + oos.size());
+                    System.out.println("ServerThread " + oos.size() + " Deleted " + player.getName());
                     for (ObjectOutputStream out : oos) {
                         try {
-                            out.writeObject(Const.STATUS + createStatus());
+                            out.writeObject(players);
                             out.writeObject(Const.CHAT + "Игрок " + player.getName() + " покинул комнату\n");
                             out.reset();
                         } catch (IOException e1) { /*Nothing TO DO */ }
@@ -104,15 +115,21 @@ public class ServerThread extends Thread {
         }
     }
 
-    private String createStatus() {
-        String status = "";
+    private Player checkPlayerName(Player player) {
+        int postfix = 2;
+        String name = player.getName();
         synchronized (players) {
-            for (Player u : players) {
-                status += u.getName() + ",";
-                status += u.getAddress() + ",";
-                status += u.isReady() + ";";
+            while (true) {
+                boolean trip = true;
+                for (Player p : players) {
+                    trip &= !p.getName().equals(name);
+                }
+                if (trip) return new Player(name, player.getAddress(), player.isReady());
+                else {
+                    name = player.getName() + postfix++;
+                }
             }
         }
-        return status;
     }
+
 }

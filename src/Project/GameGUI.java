@@ -159,7 +159,7 @@ public class GameGUI extends JFrame implements Runnable {
                     int i = (int) object;
                     System.out.println("int: " + i);
                 } else
-                    System.out.println("Не поддерживается - " + object.getClass());
+                    System.out.println("GameGUI: Not supported " + object.getClass());
             } catch (Exception e) {
                 JOptionPane.showMessageDialog(GameGUI.this, "Сервер отключился");
                 System.exit(0);
