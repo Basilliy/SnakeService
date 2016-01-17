@@ -90,64 +90,7 @@ public class GameGUI extends JFrame implements Runnable {
 
     @Override
     public void run() {
-
-        //Тестовый код:Начало
-        /*
-        {
-            int[][] ints = new int[][]{
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, -1, 0, 0, 14, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 14, 14, 12, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 21, 24, 24, 24, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 24, 0, 0, 0, 0, 0, 0},
-                    {0, 0, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0},
-                    {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-            };
-
-            int[] sc = new int[4];
-            String[] n = new String[4];
-
-            sc[0] = 4;
-            sc[1] = 2;
-            sc[2] = 6;
-            sc[3] = 4;
-
-            n[0] = "rik";
-            n[1] = "fgd";
-            n[2] = "ggg";
-            n[3] = "bas";
-
-            Score score = new Score(sc, n);
-            score.addScore(-40, "bas");
-            System.out.println("before1: " + Arrays.toString(score.getScore()));
-
-            try {
-                out.writeObject(score);
-                out.reset();
-                out.writeObject(new Board(ints));
-                out.reset();
-                score.addScore(30, "bas"); // -6
-                System.out.println("before2: " + Arrays.toString(score.getScore()));
-                out.writeObject(score);
-                out.reset();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        */
-        //Тестовый код:Конец
-
         while (working) {
-            System.out.println(getSize());
             try {
                 Object object = in.readObject();
                 if (object.getClass().equals(Board.class)) {
