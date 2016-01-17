@@ -111,7 +111,6 @@ public class RoomGUI extends JFrame implements Runnable {
 
     private void changePosition(int position) {
         player.setPositionOnMap(position);
-        System.out.println("Position canged to " + player.getPositionOnMap());
         try {
             out.writeObject(player);
             out.reset();

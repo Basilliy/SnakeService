@@ -29,7 +29,7 @@ public class MagicMachine {
             playersNames[i] = players.get(i).getName();
         score = new Score(new int[size], playersNames);
 
-        // TODO: 15.01.2016 Установить начальное значение направлений (сделано)
+        // Установка начальное значение направлений
         for (int i = 0; i < players.size(); i++) {
             int way = -1;
             switch (players.get(i).getPositionOnMap()) {
@@ -46,7 +46,7 @@ public class MagicMachine {
         }
 
         // TODO: 15.01.2016 Принять начальное значение положения
-        // TODO: 15.01.2016 Установить начальное значение очков (сделано)
+        // Установика начальное значение очков
         for (Player player : players)  //Всем плюс +3
             score.addScore(3, player.getName());
 

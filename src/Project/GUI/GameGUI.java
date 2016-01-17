@@ -71,7 +71,9 @@ public class GameGUI extends JFrame implements Runnable {
 
         setLocationRelativeTo(owner);
         setTitle("SnakeService - " + player.getName());
-        setSize(Const.RESTRICTIONS_MAX.x + 334, Const.RESTRICTIONS_MAX.y + 50 );
+        if (server) setSize(Const.RESTRICTIONS_MAX.x + 300, Const.RESTRICTIONS_MAX.y + 50);
+        else setSize(Const.RESTRICTIONS_MAX.x + 160, Const.RESTRICTIONS_MAX.y + 50);
+        setMaximumSize(getSize());
         setMinimumSize(getSize());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setContentPane(mainPanel);
@@ -145,6 +147,7 @@ public class GameGUI extends JFrame implements Runnable {
         //Тестовый код:Конец
 
         while (working) {
+            System.out.println(getSize());
             try {
                 Object object = in.readObject();
                 if (object.getClass().equals(Board.class)) {

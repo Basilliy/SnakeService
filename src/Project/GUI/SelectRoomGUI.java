@@ -188,23 +188,6 @@ public class SelectRoomGUI extends JFrame{
     }
 
     public static void main(String... console) throws Exception {
-        System.out.println("Started");
-//        Player player = new Player("Basill", null, false);
-//        GameGUI gameGUI = new GameGUI(player, null, null, true, null);
-//        Thread thread = new Thread(gameGUI);
-//        thread.start();
         new SelectRoomGUI();
-//        new SelectRoomGUI();
-//        new SelectRoomGUI();
-//        new SelectRoomGUI();
-//        new SelectRoomGUI();
-//        new SelectRoomGUI();
-//        new SelectRoomGUI();
-//        new SelectRoomGUI();
-//        new SelectRoomGUI();
-
-//        new ServerController(PORT);
-//        Socket socket = new Socket(InetAddress.getLocalHost(), PORT);
-//        (new Thread(new RoomGUI(socket, "Basill", null))).start();
     }
 }
