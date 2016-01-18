@@ -11,18 +11,9 @@ import java.util.ArrayList;
 
 public class Snake {
     private static final Image[] HEAD = new Image[4];
-    public static final int DOWN = 0;
-    public static final int LEFT = 1;
-    public static final int RIGHT = 2;
-    public static final int UP = 3;
-    public static final int DELAY = 16;
-    ///Добавил высоту и ширину
-    public static final int height = 16;
-    public static final int width = 16;
 
-    public static final Point RESTRICTIONS_MAX = new Point(256, 256); // Верхнее ограничение
-    public static final Point RESTRICTIONS_MIN = new Point(0, 0); // Нижнее ограничение
-
+    public static final int height = 16 ;
+    public static final int width = 16 ;
 
     public Point headPoint;
     public Point tailPoint;
@@ -35,10 +26,10 @@ public class Snake {
 
     static {
         try {
-            HEAD[0] = ImageIO.read(new File("Images/headDown.png"));
-            HEAD[1] = ImageIO.read(new File("Images/headLeft.png"));
-            HEAD[2] = ImageIO.read(new File("Images/headRight.png"));
-            HEAD[3] = ImageIO.read(new File("Images/headUp.png"));
+            HEAD[0] = ImageIO.read(new File("src/Images/headDown.png"));
+            HEAD[1] = ImageIO.read(new File("src/Images/headLeft.png"));
+            HEAD[2] = ImageIO.read(new File("src/Images/headRight.png"));
+            HEAD[3] = ImageIO.read(new File("src/Images/headUp.png"));
         } catch (IOException e) {
             e.printStackTrace();
             JOptionPane.showMessageDialog(null, "Вставь картинку для головы змеи 16x16 как " +
@@ -47,21 +38,19 @@ public class Snake {
         }
     }
 
-    public Snake() {
-        headWay = 0;
-        headPoint = new Point(2*DELAY, 4*DELAY);
-        body.add(new SnakeBody(new Point(2*DELAY, 3*DELAY), headWay));
-        body.add(new SnakeBody(new Point(2*DELAY, 2*DELAY), headWay));
-        length = body.size();
+    public Snake(int x, int y, int way, int numberOfSnake) {
+        this.numberOfSnake = numberOfSnake;
+        headWay = way;
+        headPoint = new Point(x*Const.DELAY, y*Const.DELAY);
         tailPoint = body.get(body.size()-1).point;
         updateBoard();
     }
 
     /** Рисуемся на текущих координатах */
-    public void paint(Graphics g) {
-        g.drawImage(HEAD[headWay], headPoint.x, headPoint.y, null);
-        for (SnakeBody sb: body) sb.paint(g);
-        controlWay = true;
+    public void paint(int[][] board) {
+       board[headPoint.x][headPoint.y] = numberOfSnake * 10 + headWay;
+        for (SnakeBody sb: body) sb.paint(board,numberOfSnake);
+
     }
 
     /** Делаем шаг, определяем координаты головы в
@@ -70,32 +59,32 @@ public class Snake {
         int x = headPoint.x;
         int y = headPoint.y;
         switch (headWay){
-            case DOWN: y += DELAY; break;
-            case UP: y -= DELAY; break;
-            case RIGHT: x += DELAY; break;
-            case LEFT: x -= DELAY; break;
+            case Const.DOWN: y += Const.DELAY; break;
+            case Const.UP: y -= Const.DELAY; break;
+            case Const.RIGHT: x += Const.DELAY; break;
+            case Const.LEFT: x -= Const.DELAY; break;
         }
-        if (x >= RESTRICTIONS_MIN.x && x < RESTRICTIONS_MAX.x
-                && y >= RESTRICTIONS_MIN.y && y < RESTRICTIONS_MAX.y) {
+        if (x >= Const.RESTRICTIONS_MIN.x && x < Const.RESTRICTIONS_MAX.x
+                && y >= Const.RESTRICTIONS_MIN.y && y < Const.RESTRICTIONS_MAX.y) {
             nullBoard();
             headPoint = new Point(x,y);
 
             boolean b = false;
-            if (Pro.Paint.BOARD[headPoint.x/DELAY][headPoint.y/DELAY] == -1) {
-                Pro.Paint.BOARD[headPoint.x/DELAY][headPoint.y/DELAY] = 0;
-
-                if(Pro.Paint.mainApple.point.equals(headPoint))
-                    Pro.Paint.mainApple = null;
-                for (Apple apple: Pro.Paint.apples
-                        ) {
-                    if(apple.point.equals(headPoint)) {
-                        Pro.Paint.apples.remove(apple);
-                        break;
-                    }
-                }
-                bodyIncrease();
-                b = true;
-            }
+//            if (Pro.Paint.BOARD[headPoint.x/Const.DELAY][headPoint.y/Const.DELAY] == -1) {
+//                Pro.Paint.BOARD[headPoint.x/Const.DELAY][headPoint.y/Const.DELAY] = 0;
+//
+//                if(Pro.Paint.mainApple.point.equals(headPoint))
+//                    Pro.Paint.mainApple = null;
+//                for (Apple apple: Pro.Paint.apples
+//                        ) {
+//                    if(apple.point.equals(headPoint)) {
+//                        Pro.Paint.apples.remove(apple);
+//                        break;
+//                    }
+//                }
+//                bodyIncrease();
+//                b = true;
+//            }
 
             if (b) for (int i = 0; i < body.size() - 1; i++) body.get(i).move();
             else body.forEach(SnakeBody::move);
@@ -109,10 +98,10 @@ public class Snake {
     public void turn(int way){
         if (controlWay) {
             controlWay = false;
-            if ((way == DOWN && headWay == UP)
-                    || (way == UP && headWay == DOWN)
-                    || (way == LEFT && headWay == RIGHT)
-                    || (way == RIGHT && headWay == LEFT))
+            if ((way == Const.DOWN && headWay == Const.UP)
+                    || (way == Const.UP && headWay == Const.DOWN)
+                    || (way == Const.LEFT && headWay == Const.RIGHT)
+                    || (way == Const.RIGHT && headWay == Const.LEFT))
                 return;
             headWay = way;
             for (SnakeBody sb : body) sb.turn(headPoint, way);
@@ -121,18 +110,18 @@ public class Snake {
 
     /** Установление карты по змее*/
     public void updateBoard() {
-        Pro.Paint.BOARD[headPoint.x/DELAY][headPoint.y/DELAY] = numberOfSnake;
-        for (SnakeBody sb: body) Pro.Paint.BOARD[sb.point.x / DELAY][sb.point.y / DELAY] = numberOfBody;
+//        Pro.Paint.BOARD[headPoint.x/Const.DELAY][headPoint.y/Const.DELAY] = numberOfSnake;
+//        for (SnakeBody sb: body) Pro.Paint.BOARD[sb.point.x / Const.DELAY][sb.point.y / Const.DELAY] = numberOfBody;
     }
 
     /** Обнуление карты по змее */
     public void nullBoard() {
-        Pro.Paint.BOARD[headPoint.x/DELAY][headPoint.y/DELAY] = 0;
-        for (SnakeBody sb: body) Pro.Paint.BOARD[sb.point.x / DELAY][sb.point.y / DELAY] = 0;
+//        Pro.Paint.BOARD[headPoint.x/Const.DELAY][headPoint.y/Const.DELAY] = 0;
+//        for (SnakeBody sb: body) Pro.Paint.BOARD[sb.point.x / Const.DELAY][sb.point.y / Const.DELAY] = 0;
     }
 
 
-    private void bodyIncrease() {
+    public void bodyIncrease() {
         SnakeBody sb = body.get(body.size() - 1);
         SnakeBody nsb = new SnakeBody(sb.point, sb.way);
         for (Point point: sb.wayPoint) nsb.wayPoint.add(new Point(point.x, point.y));

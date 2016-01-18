@@ -13,9 +13,9 @@ import java.util.Random;
 public class Paint extends JPanel {
     Timer mainTimer = new Timer(30, null);
     BufferedImage image;
-    Snake snake = new Snake();
-    public static final int[][] BOARD = new int[Snake.RESTRICTIONS_MAX.x / Snake.DELAY]
-            [Snake.RESTRICTIONS_MAX.y / Snake.DELAY];
+//    Snake snake = new Snake();
+//    public static final int[][] BOARD = new int[Snake.RESTRICTIONS_MAX.x / Snake.DELAY]
+//            [Snake.RESTRICTIONS_MAX.y / Snake.DELAY];
     public static Apple mainApple;
 
     public static ArrayList<Apple> apples = new ArrayList<>();
@@ -35,8 +35,8 @@ public class Paint extends JPanel {
         graphics.setColor(Color.LIGHT_GRAY);
         graphics.fillRect(0,0,256,256);
 
-        snake.paint(graphics);
-
+//        snake.paint(graphics);
+//
 //        for(int i = 0; i < BOARD.length; i ++){
 //            for(int j = 0; j < BOARD.length; j++){
 //                System.out.print(BOARD[i][j]);
@@ -56,8 +56,8 @@ public class Paint extends JPanel {
     }
 
     public void moveSnake(){
-        snake.move();
-        snake.CollisionWihtYourself();
+//        snake.move();
+//        snake.CollisionWihtYourself();
 
     }
 
@@ -65,12 +65,12 @@ public class Paint extends JPanel {
         Random random = new Random();
         int x;
         int y;
-        while (true) {
-            x = random.nextInt(BOARD.length);
-            y = random.nextInt(BOARD[0].length);
-            if (BOARD[x][y] == 0) break;
-        }
-        return new Point(x*Snake.DELAY,y*Snake.DELAY);
+//        while (true) {
+//            x = random.nextInt(BOARD.length);
+//            y = random.nextInt(BOARD[0].length);
+//            if (BOARD[x][y] == 0) break;
+//        }
+        return null;
     }
 
 
@@ -78,10 +78,10 @@ public class Paint extends JPanel {
     private class myKeyAdapter extends KeyAdapter {
         public void keyPressed(KeyEvent e) {
             switch (e.getKeyCode()){
-                case KeyEvent.VK_W: snake.turn(Snake.UP); break;
-                case KeyEvent.VK_A: snake.turn(Snake.LEFT); break;
-                case KeyEvent.VK_S: snake.turn(Snake.DOWN); break;
-                case KeyEvent.VK_D: snake.turn(Snake.RIGHT); break;
+//                case KeyEvent.VK_W: snake.turn(Snake.UP); break;
+//                case KeyEvent.VK_A: snake.turn(Snake.LEFT); break;
+//                case KeyEvent.VK_S: snake.turn(Snake.DOWN); break;
+//                case KeyEvent.VK_D: snake.turn(Snake.RIGHT); break;
             }
         }
     }

@@ -12,6 +12,7 @@ import java.util.ArrayList;
 public class MagicMachine {
     private final ArrayList<ObjectOutputStream> oos;
     private final ArrayList<Player> players;
+    private final ArrayList<Snake> snakes = new ArrayList<>();
     private int[] ways;
     private Score score;
     private Timer timer;
@@ -46,6 +47,50 @@ public class MagicMachine {
         }
 
         // TODO: 15.01.2016 Принять начальное значение положения
+        int position;
+        int x=0, y=0;
+        for (int i = 0; i < players.size(); i++) {
+           position =  players.get(i).getPositionOnMap();
+            switch (position){
+                case Const.MAP_UP_LEFT :
+                    x = 1;
+                    y = 4;
+                    break;
+                case Const.MAP_UP :
+                    x = 15;
+                    y = 4;
+                    break;
+                case Const.MAP_UP_RIGHT :
+                    x = 29;
+                    y = 4;
+                    break;
+                case Const.MAP_RIGHT :
+                    x = 26;
+                    y = 16;
+                    break;
+                case Const.MAP_DOWN_RIGHT :
+                    x = 29;
+                    y = 26;
+                    break;
+                case Const.DOWN :
+                    x = 16;
+                    y = 26;
+                    break;
+                case Const.MAP_DOWN_LEFT :
+                    x = 1;
+                    y = 26;
+                    break;
+                case Const.MAP_LEFT :
+                    x = 4;
+                    y = 15;
+                    break;
+            }
+            Snake sn = new Snake(x, y, ways[i],i+1);
+            sn.bodyIncrease();
+            sn.bodyIncrease();
+            snakes.add(sn);
+        }
+        mapPrint();
         // Установика начальное значение очков
         for (Player player : players)  //Всем плюс +3
             score.addScore(3, player.getName());
@@ -54,6 +99,17 @@ public class MagicMachine {
         timer.start();
     }
 
+    public void mapPrint(){
+       for(int i = 0; i < board.length; i++){
+           for(int j = 0; j < board.length; j++){
+               board[i][j]=0;
+           }
+       }
+        for (Snake s: snakes
+             ) {
+            s.paint(board);
+        }
+    }
     // TODO: 15.01.2016 В этом методе установить дейсвтие каждого шага:
     // TODO: 15.01.2016 1) расчет карты
     // TODO: 15.01.2016 2) начисление очков

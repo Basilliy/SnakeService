@@ -9,6 +9,7 @@ public class Player implements Serializable {
     private boolean ready;
     private int positionOnMap;
 
+
     public Player(String name, String address, boolean ready, int positionOnMap){
         this.name = name;
         this.address = address;

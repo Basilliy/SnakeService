@@ -17,7 +17,7 @@ public class Apple {
     static {
         Image image;
         try {
-            image = ImageIO.read(new File("Images/apple.png"));
+            image = ImageIO.read(new File("src/Images/apple.png"));
         } catch (IOException e) {
             image = null;
             e.printStackTrace();
@@ -31,7 +31,7 @@ public class Apple {
 
     public Apple(Point point){
         this.point = point;
-        Paint.BOARD[point.x/ Snake.DELAY][point.y/Snake.DELAY] = -1;
+//        Paint.BOARD[point.x/ Snake.DELAY][point.y/Snake.DELAY] = -1;
     }
 
     public void paint(Graphics g) {

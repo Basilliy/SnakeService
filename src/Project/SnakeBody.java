@@ -23,7 +23,7 @@ public class SnakeBody {
     static {
         Image image;
         try {
-            image = ImageIO.read(new File("Images/body.png"));
+            image = ImageIO.read(new File("src/Images/body.png"));
         } catch (IOException e) {
             image = null;
             e.printStackTrace();
@@ -51,10 +51,10 @@ public class SnakeBody {
         int x = point.x;
         int y = point.y;
         switch (way){
-            case Snake.DOWN: y += Snake.DELAY; break;
-            case Snake.UP: y -= Snake.DELAY; break;
-            case Snake.RIGHT: x += Snake.DELAY; break;
-            case Snake.LEFT: x -= Snake.DELAY; break;
+            case Const.DOWN: y += Const.DELAY; break;
+            case Const.UP: y -= Const.DELAY; break;
+            case Const.RIGHT: x += Const.DELAY; break;
+            case Const.LEFT: x -= Const.DELAY; break;
         }
         point = new Point(x,y);
         if (!wayPoint.isEmpty())
@@ -65,8 +65,10 @@ public class SnakeBody {
     }
 
     /** Рисуемся на текущих координатах */
-    public void paint(Graphics g){
-        g.drawImage(body, point.x, point.y, null);
+    public void paint(int [][] board, int numberOfSnake){
+
+        board[point.x][point.y] = numberOfSnake;
+
     }
 
     public Rectangle getRect()
