@@ -11,14 +11,15 @@ public class Const {
     public static final String WAY = "#WAY:";
     public static final String PATH = "src/Images/";
     public static final int PORT = 55000;
+
     public static final int DOWN = 0;
     public static final int LEFT = 1;
     public static final int RIGHT = 2;
     public static final int UP = 3;
+
     public static final int DELAY = 16;
     public static final int TIMER = 500; // Время в миллисекундах
     public static final Point RESTRICTIONS_MAX = new Point(DELAY * 30, DELAY * 30); // Верхнее ограничение
-//    public static final Point RESTRICTIONS_MAX = new Point(256, 256); // Верхнее ограничение
     public static final Point RESTRICTIONS_MIN = new Point(0, 0); // Нижнее ограничение
 
     //Константы позиций на карте

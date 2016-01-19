@@ -66,9 +66,7 @@ public class SnakeBody {
 
     /** Рисуемся на текущих координатах */
     public void paint(int [][] board, int numberOfSnake){
-
-        board[point.x][point.y] = numberOfSnake;
-
+        board[point.x][point.y] = (numberOfSnake * 10) + 4;
     }
 
     public Rectangle getRect()

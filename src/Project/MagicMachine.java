@@ -8,6 +8,7 @@ import javax.swing.*;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class MagicMachine {
     private final ArrayList<ObjectOutputStream> oos;
@@ -46,48 +47,24 @@ public class MagicMachine {
             ways[i] = way;
         }
 
-        // TODO: 15.01.2016 Принять начальное значение положения
+//          Принять начальное значение положения
         int position;
         int x=0, y=0;
         for (int i = 0; i < players.size(); i++) {
            position =  players.get(i).getPositionOnMap();
             switch (position){
-                case Const.MAP_UP_LEFT :
-                    x = 1;
-                    y = 4;
-                    break;
-                case Const.MAP_UP :
-                    x = 15;
-                    y = 4;
-                    break;
-                case Const.MAP_UP_RIGHT :
-                    x = 29;
-                    y = 4;
-                    break;
-                case Const.MAP_RIGHT :
-                    x = 26;
-                    y = 16;
-                    break;
-                case Const.MAP_DOWN_RIGHT :
-                    x = 29;
-                    y = 26;
-                    break;
-                case Const.DOWN :
-                    x = 16;
-                    y = 26;
-                    break;
-                case Const.MAP_DOWN_LEFT :
-                    x = 1;
-                    y = 26;
-                    break;
-                case Const.MAP_LEFT :
-                    x = 4;
-                    y = 15;
-                    break;
+                case Const.MAP_UP_LEFT : x = 1; y = 4; break;
+                case Const.MAP_UP : x = 15; y = 4; break;
+                case Const.MAP_UP_RIGHT : x = 29; y = 4; break;
+                case Const.MAP_RIGHT : x = 26; y = 16; break;
+                case Const.MAP_DOWN_RIGHT : x = 29; y = 26; break;
+                case Const.DOWN : x = 16; y = 26; break;
+                case Const.MAP_DOWN_LEFT : x = 1; y = 26; break;
+                case Const.MAP_LEFT : x = 4; y = 15; break;
             }
-            Snake sn = new Snake(x, y, ways[i],i+1);
-            sn.bodyIncrease();
-            sn.bodyIncrease();
+            Snake sn = new Snake(x, y, ways[i], i + 1);
+//            sn.bodyIncrease();
+//            sn.bodyIncrease();
             snakes.add(sn);
         }
         mapPrint();
@@ -99,17 +76,15 @@ public class MagicMachine {
         timer.start();
     }
 
-    public void mapPrint(){
-       for(int i = 0; i < board.length; i++){
-           for(int j = 0; j < board.length; j++){
-               board[i][j]=0;
-           }
-       }
-        for (Snake s: snakes
-             ) {
-            s.paint(board);
-        }
+    public void mapPrint() {
+        for (int i = 0; i < board.length; i++)
+            for (int j = 0; j < board.length; j++)
+                board[i][j] = 0;
+
+        for (Snake s : snakes) s.paint(board);
     }
+
+
     // TODO: 15.01.2016 В этом методе установить дейсвтие каждого шага:
     // TODO: 15.01.2016 1) расчет карты
     // TODO: 15.01.2016 2) начисление очков
@@ -124,6 +99,11 @@ public class MagicMachine {
     }
 
     private void toClient() {
+        System.out.println("ways = " + ways[0]);
+        for (int[] ints : board) {
+            for (int anInt : ints) System.out.print(anInt);
+            System.out.println();
+        }
         synchronized (oos) {
             for (ObjectOutputStream out : oos) {
                 try {

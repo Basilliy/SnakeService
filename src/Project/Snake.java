@@ -41,7 +41,24 @@ public class Snake {
     public Snake(int x, int y, int way, int numberOfSnake) {
         this.numberOfSnake = numberOfSnake;
         headWay = way;
-        headPoint = new Point(x*Const.DELAY, y*Const.DELAY);
+        headPoint = new Point(x, y);
+
+
+        int X1 = x;
+        int Y1 = y;
+        int X2 = x;
+        int Y2 = y;
+
+        switch (way) {
+            case Const.DOWN : Y1 -= 1; Y2 -= 2; break;
+            case Const.LEFT: X1 += 1; X2 += 2; break;
+            case Const.RIGHT: X1 -= 1; X2 -= 2; break;
+            case Const.UP: Y1 += 1;Y2 += 2; break;
+        }
+
+        body.add(new SnakeBody(new Point(X1, Y1), way));
+        body.add(new SnakeBody(new Point(X2, Y2), way));
+
         tailPoint = body.get(body.size()-1).point;
         updateBoard();
     }

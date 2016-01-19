@@ -38,6 +38,7 @@ public class ServerController extends Thread {
                     if (b) {
                         synchronized (oos) {
                             oos.add(socketOOS);
+                            System.out.println("Size = " + oos.size());
                         }
                         ServerThread readerThread = new ServerThread(oos, socketOIS, socketOOS, players, ways);
                         readerThread.start();

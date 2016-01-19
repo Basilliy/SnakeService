@@ -136,7 +136,7 @@ public class GameGUI extends JFrame implements Runnable {
                 Image image;
                 if (board[i][j] == -1) {
                     image = apple;
-                    g.drawImage(image, j*Const.DELAY, i*Const.DELAY, null);
+                    g.drawImage(image, i*Const.DELAY, j*Const.DELAY, null);
                 }
                 if (board[i][j] > 0) {
                     int d = board[i][j];
@@ -155,7 +155,7 @@ public class GameGUI extends JFrame implements Runnable {
                             default: image = body0;
                         }
                     }
-                    g.drawImage(image, j*Const.DELAY, i*Const.DELAY, null);
+                    g.drawImage(image, i*Const.DELAY, j*Const.DELAY, null);
                 }
             }
         }

@@ -153,8 +153,9 @@ public class SelectRoomGUI extends JFrame{
         if (!name.equals("")) {
             try {
                 new ServerController(PORT);
-                Socket socket = new Socket(InetAddress.getLocalHost(), PORT);
+                System.out.println("LoopbackAddress = " + InetAddress.getLoopbackAddress());
                 System.out.println("LocalHost = " + InetAddress.getLocalHost());
+                Socket socket = new Socket(InetAddress.getLoopbackAddress(), PORT);
                 this.setVisible(false);
                 RoomGUI roomGUI = new RoomGUI(socket, name, SelectRoomGUI.this, true);
                 (new Thread(roomGUI)).start();
