@@ -66,10 +66,11 @@ public class GameGUI extends JFrame implements Runnable {
         gamePanel.setSize(Const.RESTRICTIONS_MAX.x, Const.RESTRICTIONS_MAX.y);
         gamePanel.setMinimumSize(gamePanel.getSize());
         gamePanel.setMaximumSize(gamePanel.getSize());
-        gamePanel.setFocusable(true);
-        gamePanel.addKeyListener(new myKeyAdapter());
 
-        setLocationRelativeTo(owner);
+        setFocusable(true);
+        addKeyListener(new myKeyAdapter());
+
+//        setLocationRelativeTo(owner);
         setTitle("SnakeService - " + player.getName());
         if (server) setSize(Const.RESTRICTIONS_MAX.x + 300, Const.RESTRICTIONS_MAX.y + 50);
         else setSize(Const.RESTRICTIONS_MAX.x + 160, Const.RESTRICTIONS_MAX.y + 50);

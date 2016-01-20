@@ -15,10 +15,7 @@ public class SnakeBody {
     public Point point;
     public Queue<Integer> wayTurn = new LinkedList<>(); //Очередь изменений напрвлений блока
     public Queue<Point> wayPoint = new LinkedList<>(); //Очередь точек поворота
-
-    ///Добавил высоту и ширину
-    public static final int height = 16;
-    public static final int width = 16;
+    private int[][] board;
 
     static {
         Image image;
@@ -34,7 +31,8 @@ public class SnakeBody {
         body = image;
     }
 
-    public SnakeBody(Point point, int way){
+    public SnakeBody(Point point, int way, int[][] board){
+        this.board = board;
         this.point = point;
         this.way = way;
     }
@@ -50,11 +48,11 @@ public class SnakeBody {
     public void move(){
         int x = point.x;
         int y = point.y;
-        switch (way){
-            case Const.DOWN: y += Const.DELAY; break;
-            case Const.UP: y -= Const.DELAY; break;
-            case Const.RIGHT: x += Const.DELAY; break;
-            case Const.LEFT: x -= Const.DELAY; break;
+        switch (way) {
+            case Const.DOWN: y += 1; break;
+            case Const.UP: y -= 1; break;
+            case Const.RIGHT: x += 1; break;
+            case Const.LEFT: x -= 1; break;
         }
         point = new Point(x,y);
         if (!wayPoint.isEmpty())
@@ -65,13 +63,11 @@ public class SnakeBody {
     }
 
     /** Рисуемся на текущих координатах */
-    public void paint(int [][] board, int numberOfSnake){
+    public void paint(int numberOfSnake) {
         board[point.x][point.y] = (numberOfSnake * 10) + 4;
     }
 
-    public Rectangle getRect()
-    {
-        return new Rectangle(point.x,point.y, height, width);
-
+    public Rectangle getRect() {
+        return new Rectangle(point.x,point.y, Const.DELAY, Const.DELAY);
     }
 }

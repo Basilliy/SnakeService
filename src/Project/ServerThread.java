@@ -42,10 +42,11 @@ public class ServerThread extends Thread {
                                     break;
                                 }
                         }
-                        if (ways == null) ways = new int[players.size()];
-                        synchronized (ways) {
-                            if ((ways[position] + nWay) != 3)
-                                ways[position] = nWay;
+                        if (ways != null) {
+                            synchronized (ways) {
+                                if ((ways[position] + nWay) != 3)
+                                    ways[position] = nWay;
+                            }
                         }
                     }
                 } else

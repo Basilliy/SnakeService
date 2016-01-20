@@ -1,14 +1,17 @@
 package Project;
 
+import Pro.Apple;
 import Project.SentObjects.Board;
 import Project.SentObjects.Player;
 import Project.SentObjects.Score;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Random;
 
 public class MagicMachine {
     private final ArrayList<ObjectOutputStream> oos;
@@ -17,15 +20,17 @@ public class MagicMachine {
     private int[] ways;
     private Score score;
     private Timer timer;
-    private int[][] board = new int[Const.RESTRICTIONS_MAX.x / Const.DELAY]
-            [Const.RESTRICTIONS_MAX.y / Const.DELAY];
+    private int[][] board = new int[Const.RESTRICTIONS_MAX.x / Const.DELAY][Const.RESTRICTIONS_MAX.y / Const.DELAY];
+    public static Apple mainApple;
+    public static ArrayList<Apple> apples = new ArrayList<>();
 
     public MagicMachine(ArrayList<ObjectOutputStream> oos, ArrayList<Player> players, int[] ways) {
         this.oos = oos;
         this.players = players;
         int size = oos.size();
-        if (ways == null) ways = new int[players.size()];
         this.ways = ways;
+//        if (ways == null)
+//            ways = new int[players.size()];
         String[] playersNames = new String[size];
         for (int i = 0; i < players.size(); i++)
             playersNames[i] = players.get(i).getName();
@@ -62,12 +67,11 @@ public class MagicMachine {
                 case Const.MAP_DOWN_LEFT : x = 1; y = 26; break;
                 case Const.MAP_LEFT : x = 4; y = 15; break;
             }
-            Snake sn = new Snake(x, y, ways[i], i + 1);
-//            sn.bodyIncrease();
-//            sn.bodyIncrease();
+            Snake sn = new Snake(x, y, ways[i], i + 1, board);
+
             snakes.add(sn);
         }
-        mapPrint();
+//        mapPrint();
         // Установика начальное значение очков
         for (Player player : players)  //Всем плюс +3
             score.addScore(3, player.getName());
@@ -81,9 +85,8 @@ public class MagicMachine {
             for (int j = 0; j < board.length; j++)
                 board[i][j] = 0;
 
-        for (Snake s : snakes) s.paint(board);
+        snakes.forEach(Snake::paint);
     }
-
 
     // TODO: 15.01.2016 В этом методе установить дейсвтие каждого шага:
     // TODO: 15.01.2016 1) расчет карты
@@ -91,19 +94,41 @@ public class MagicMachine {
     // TODO: 15.01.2016 Отправление данных клиентам происходит по методу toClient()
     private void doSomething() {
         synchronized (ways) {
-
+            for (int i = 0; i < players.size(); i++) snakes.get(i).turn(ways[i]);
         }
 
+        if (mainApple == null) mainApple = new Apple(createPointForApple());
+        board[mainApple.point.x][mainApple.point.y] = -1;
 
+        for (Apple apple: apples) board[apple.point.x][apple.point.y] = -1;
+
+        snakes.forEach(Snake::move);
+
+//        mapPrint();
         toClient();
     }
 
-    private void toClient() {
-        System.out.println("ways = " + ways[0]);
-        for (int[] ints : board) {
-            for (int anInt : ints) System.out.print(anInt);
-            System.out.println();
+    private Point createPointForApple() {
+        Random random = new Random();
+        int x;
+        int y;
+        while (true) {
+            x = random.nextInt(board.length);
+            y = random.nextInt(board[0].length);
+            if (board[x][y] == 0) break;
         }
+        return new Point(x,y);
+    }
+
+    private void toClient() {
+
+//        System.out.println();
+//        for (int[] aBoard : board) {
+//            for (int i1 = 0; i1 < board.length; i1++)
+//                System.out.print(aBoard[i1]);
+//            System.out.println();
+//        }
+
         synchronized (oos) {
             for (ObjectOutputStream out : oos) {
                 try {

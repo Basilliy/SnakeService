@@ -48,8 +48,7 @@ public class Paint extends JPanel {
         if (mainApple == null) mainApple = new Apple(createPointForApple());
         mainApple.paint(graphics);
 
-        for (Apple apple :
-                apples) {
+        for (Apple apple :apples) {
             apple.paint(graphics);
         }
         g.drawImage(image, 0,0, null);

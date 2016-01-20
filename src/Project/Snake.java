@@ -10,7 +10,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 public class Snake {
-    private static final Image[] HEAD = new Image[4];
 
     public static final int height = 16 ;
     public static final int width = 16 ;
@@ -20,29 +19,14 @@ public class Snake {
     public int length;
     public ArrayList<SnakeBody> body = new ArrayList<>();
     public int headWay;
-    public boolean controlWay = true;
     public int numberOfSnake = 1; // 1 или более
-    public int numberOfBody = 2;
+    private int[][] board;
 
-    static {
-        try {
-            HEAD[0] = ImageIO.read(new File("src/Images/headDown.png"));
-            HEAD[1] = ImageIO.read(new File("src/Images/headLeft.png"));
-            HEAD[2] = ImageIO.read(new File("src/Images/headRight.png"));
-            HEAD[3] = ImageIO.read(new File("src/Images/headUp.png"));
-        } catch (IOException e) {
-            e.printStackTrace();
-            JOptionPane.showMessageDialog(null, "Вставь картинку для головы змеи 16x16 как " +
-                    "\nImages/headDown.png (Left/Up/Right)");
-            System.exit(404);
-        }
-    }
-
-    public Snake(int x, int y, int way, int numberOfSnake) {
+    public Snake(int x, int y, int way, int numberOfSnake, int[][] board) {
         this.numberOfSnake = numberOfSnake;
+        this.board = board;
         headWay = way;
         headPoint = new Point(x, y);
-
 
         int X1 = x;
         int Y1 = y;
@@ -56,18 +40,17 @@ public class Snake {
             case Const.UP: Y1 += 1;Y2 += 2; break;
         }
 
-        body.add(new SnakeBody(new Point(X1, Y1), way));
-        body.add(new SnakeBody(new Point(X2, Y2), way));
+        body.add(new SnakeBody(new Point(X1, Y1), way, board));
+        body.add(new SnakeBody(new Point(X2, Y2), way, board));
 
         tailPoint = body.get(body.size()-1).point;
-        updateBoard();
+        paint();
     }
 
     /** Рисуемся на текущих координатах */
-    public void paint(int[][] board) {
-       board[headPoint.x][headPoint.y] = numberOfSnake * 10 + headWay;
-        for (SnakeBody sb: body) sb.paint(board,numberOfSnake);
-
+    public void paint() {
+        board[headPoint.x][headPoint.y] = numberOfSnake * 10 + headWay;
+        for (SnakeBody sb : body) sb.paint(numberOfSnake);
     }
 
     /** Делаем шаг, определяем координаты головы в
@@ -75,72 +58,61 @@ public class Snake {
     public void move() {
         int x = headPoint.x;
         int y = headPoint.y;
-        switch (headWay){
-            case Const.DOWN: y += Const.DELAY; break;
-            case Const.UP: y -= Const.DELAY; break;
-            case Const.RIGHT: x += Const.DELAY; break;
-            case Const.LEFT: x -= Const.DELAY; break;
+        switch (headWay) {
+            case Const.DOWN: y += 1; break;
+            case Const.UP: y -= 1; break;
+            case Const.RIGHT: x += 1; break;
+            case Const.LEFT: x -= 1; break;
         }
-        if (x >= Const.RESTRICTIONS_MIN.x && x < Const.RESTRICTIONS_MAX.x
-                && y >= Const.RESTRICTIONS_MIN.y && y < Const.RESTRICTIONS_MAX.y) {
+
+        if (x >= Const.RESTRICTIONS_MIN.x/Const.DELAY && x < Const.RESTRICTIONS_MAX.x/Const.DELAY
+                && y >= Const.RESTRICTIONS_MIN.y/Const.DELAY && y < Const.RESTRICTIONS_MAX.y/Const.DELAY) {
             nullBoard();
             headPoint = new Point(x,y);
-
             boolean b = false;
-//            if (Pro.Paint.BOARD[headPoint.x/Const.DELAY][headPoint.y/Const.DELAY] == -1) {
-//                Pro.Paint.BOARD[headPoint.x/Const.DELAY][headPoint.y/Const.DELAY] = 0;
-//
-//                if(Pro.Paint.mainApple.point.equals(headPoint))
-//                    Pro.Paint.mainApple = null;
-//                for (Apple apple: Pro.Paint.apples
-//                        ) {
-//                    if(apple.point.equals(headPoint)) {
-//                        Pro.Paint.apples.remove(apple);
-//                        break;
-//                    }
-//                }
-//                bodyIncrease();
-//                b = true;
-//            }
+
+            // поедание яблока
+            if (board[headPoint.x][headPoint.y] == -1) {
+                if(MagicMachine.mainApple.point.equals(headPoint))
+                    MagicMachine.mainApple = null;
+                for (Apple apple: MagicMachine.apples)
+                    if (apple.point.equals(headPoint)) {
+                        MagicMachine.apples.remove(apple);
+                        break;
+                    }
+                bodyIncrease();
+                b = true;
+            }
 
             if (b) for (int i = 0; i < body.size() - 1; i++) body.get(i).move();
             else body.forEach(SnakeBody::move);
 
-            updateBoard();
+            paint();
         }
     }
 
     /** Изменение направление головы
      * и всех блоков туловища */
-    public void turn(int way){
-        if (controlWay) {
-            controlWay = false;
-            if ((way == Const.DOWN && headWay == Const.UP)
-                    || (way == Const.UP && headWay == Const.DOWN)
-                    || (way == Const.LEFT && headWay == Const.RIGHT)
-                    || (way == Const.RIGHT && headWay == Const.LEFT))
-                return;
-            headWay = way;
-            for (SnakeBody sb : body) sb.turn(headPoint, way);
-        }
+    public void turn(int way) {
+        headWay = way;
+        for (SnakeBody sb : body) sb.turn(headPoint, way);
     }
 
     /** Установление карты по змее*/
     public void updateBoard() {
-//        Pro.Paint.BOARD[headPoint.x/Const.DELAY][headPoint.y/Const.DELAY] = numberOfSnake;
-//        for (SnakeBody sb: body) Pro.Paint.BOARD[sb.point.x / Const.DELAY][sb.point.y / Const.DELAY] = numberOfBody;
+        board[headPoint.x][headPoint.y] = numberOfSnake * 10 + headWay;
+        for (SnakeBody sb: body) board[sb.point.x][sb.point.y] = numberOfSnake * 10 + 4;
     }
 
     /** Обнуление карты по змее */
     public void nullBoard() {
-//        Pro.Paint.BOARD[headPoint.x/Const.DELAY][headPoint.y/Const.DELAY] = 0;
-//        for (SnakeBody sb: body) Pro.Paint.BOARD[sb.point.x / Const.DELAY][sb.point.y / Const.DELAY] = 0;
+        board[headPoint.x][headPoint.y] = 0;
+        for (SnakeBody sb: body) board[sb.point.x][sb.point.y] = 0;
     }
-
 
     public void bodyIncrease() {
         SnakeBody sb = body.get(body.size() - 1);
-        SnakeBody nsb = new SnakeBody(sb.point, sb.way);
+        SnakeBody nsb = new SnakeBody(sb.point, sb.way, board);
         for (Point point: sb.wayPoint) nsb.wayPoint.add(new Point(point.x, point.y));
         for (Integer integer: sb.wayTurn) nsb.wayTurn.add(integer);
 
@@ -149,22 +121,14 @@ public class Snake {
         length = body.size();
     }
 
-    public Rectangle getRect()
-    {
-        return new
-                Rectangle(headPoint.x,headPoint.y, height, width);
-
+    public Rectangle getRect() {
+        return new Rectangle(headPoint.x,headPoint.y, height, width);
     }
 
     public void CollisionWihtYourself (){
         int i;
-        for(i = 0; i < body.size(); i ++){
-            if(body.get(i).getRect().intersects(getRect())){
-//System.out.println("It's happend"); 
-                break;
-
-            }
-        }
+        for(i = 0; i < body.size(); i ++)
+            if (body.get(i).getRect().intersects(getRect())) break;
         for(int j = body.size()-1; j >=i; j--){
             if(j!=i)
                 Pro.Paint.apples.add(new Apple(new Point(body.get(j).point.x,body.get(j).point.y)));
