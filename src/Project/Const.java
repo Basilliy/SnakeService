@@ -1,5 +1,7 @@
 package Project;
 
+import com.sun.org.apache.regexp.internal.RE;
+
 import java.awt.*;
 
 public class Const {
@@ -21,6 +23,7 @@ public class Const {
     public static final int TIMER = 500; // Время в миллисекундах
     public static final Point RESTRICTIONS_MAX = new Point(DELAY * 30, DELAY * 30); // Верхнее ограничение
     public static final Point RESTRICTIONS_MIN = new Point(0, 0); // Нижнее ограничение
+    public static final int SIZE = RESTRICTIONS_MAX.x/DELAY;
 
     //Константы позиций на карте
     public static final int MAP_NOT_CHOSEN = 0;
@@ -41,5 +44,4 @@ public class Const {
     public static final String STRING_DOWN = MAP_DOWN + ".Снизу-центр";
     public static final String STRING_DOWN_LEFT = MAP_DOWN_LEFT + ".Снизу-слева";
     public static final String STRING_LEFT = MAP_LEFT + ".Центр-слева";
-
 }

@@ -79,7 +79,7 @@ public class ServerThread extends Thread {
                     if (s.startsWith(Const.START)) {
                         if (checkPlayersPositions()) sendAll(Const.START);
                         else sendAll(Const.CHAT + "<Сервер>:Начальные позиции всех " +
-                                "игроков должны быть выбраны\n и не должны совпадать\n");
+                                "игроков не должны совпадать\n");
                     } else {
                         sendAll(object);
                     }

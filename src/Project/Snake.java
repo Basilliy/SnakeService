@@ -1,19 +1,11 @@
 package Project;
 
-import Pro.*;
+import Project.SentObjects.Player;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
 import java.awt.*;
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 public class Snake {
-
-    public static final int height = 16 ;
-    public static final int width = 16 ;
-
     public Point headPoint;
     public Point tailPoint;
     public int length;
@@ -21,9 +13,12 @@ public class Snake {
     public int headWay;
     public int numberOfSnake = 1; // 1 или более
     private int[][] board;
+    private Player player;
+    private boolean alive = true;
 
     public Snake(int x, int y, int way, int numberOfSnake, int[][] board) {
         this.numberOfSnake = numberOfSnake;
+        this.player = MagicMachine.players.get(numberOfSnake - 1);
         this.board = board;
         headWay = way;
         headPoint = new Point(x, y);
@@ -47,48 +42,48 @@ public class Snake {
         paint();
     }
 
-    /** Рисуемся на текущих координатах */
-    public void paint() {
-        board[headPoint.x][headPoint.y] = numberOfSnake * 10 + headWay;
-        for (SnakeBody sb : body) sb.paint(numberOfSnake);
-    }
-
     /** Делаем шаг, определяем координаты головы в
      * соответсвии с ограничениями */
     public void move() {
-        int x = headPoint.x;
-        int y = headPoint.y;
-        switch (headWay) {
-            case Const.DOWN: y += 1; break;
-            case Const.UP: y -= 1; break;
-            case Const.RIGHT: x += 1; break;
-            case Const.LEFT: x -= 1; break;
-        }
+        Point point = toMove(headPoint, headWay);
+        int x = point.x;
+        int y = point.y;
 
-        if (x >= Const.RESTRICTIONS_MIN.x/Const.DELAY && x < Const.RESTRICTIONS_MAX.x/Const.DELAY
-                && y >= Const.RESTRICTIONS_MIN.y/Const.DELAY && y < Const.RESTRICTIONS_MAX.y/Const.DELAY) {
-            nullBoard();
-            headPoint = new Point(x,y);
             boolean b = false;
-
             // поедание яблока
-            if (board[headPoint.x][headPoint.y] == -1) {
-                if(MagicMachine.mainApple.point.equals(headPoint))
-                    MagicMachine.mainApple = null;
-                for (Apple apple: MagicMachine.apples)
-                    if (apple.point.equals(headPoint)) {
-                        MagicMachine.apples.remove(apple);
-                        break;
+            if (board[x][y] != 0) {
+                if (board[x][y] == -1) {
+                    if (MagicMachine.mainApple.point.equals(point))
+                        MagicMachine.mainApple = null;
+//                    for (Apple apple : MagicMachine.apples)
+//                        if (apple.point.equals(point)) {
+//                            MagicMachine.apples.remove(apple);
+//                            break;
+//                        }
+                    bodyIncrease();
+                    b = true;
+                } else {
+                    int d = board[x][y];
+                    System.out.println("SnakeNumber = " + numberOfSnake + "; d = " + d);
+                    Snake snake = MagicMachine.snakes.get(d / 10 - 1);
+                    if (d % 10 != 4) {
+                        Snake.choiceToKill(this, snake);
+                    } else {
+                        Point point1 = snake.body.get(0).point;
+                        if (point1.equals(point)) Snake.choiceToKill(this, snake);
+                        else {
+                            snake.cut(point);
+                        }
                     }
-                bodyIncrease();
-                b = true;
+                }
             }
 
+            nullBoard();
+            headPoint = new Point(x, y);
             if (b) for (int i = 0; i < body.size() - 1; i++) body.get(i).move();
             else body.forEach(SnakeBody::move);
 
             paint();
-        }
     }
 
     /** Изменение направление головы
@@ -98,43 +93,83 @@ public class Snake {
         for (SnakeBody sb : body) sb.turn(headPoint, way);
     }
 
-    /** Установление карты по змее*/
-    public void updateBoard() {
+    /** Рисуемся на текущих координатах */
+    public void paint() {
         board[headPoint.x][headPoint.y] = numberOfSnake * 10 + headWay;
-        for (SnakeBody sb: body) board[sb.point.x][sb.point.y] = numberOfSnake * 10 + 4;
+        for (SnakeBody sb : body) sb.paint(numberOfSnake);
     }
 
     /** Обнуление карты по змее */
     public void nullBoard() {
         board[headPoint.x][headPoint.y] = 0;
-        for (SnakeBody sb: body) board[sb.point.x][sb.point.y] = 0;
+        for (SnakeBody sb: body) {
+            board[sb.point.x][sb.point.y] = 0;
+        }
     }
 
+    /** Увеличение змеи */
     public void bodyIncrease() {
         SnakeBody sb = body.get(body.size() - 1);
         SnakeBody nsb = new SnakeBody(sb.point, sb.way, board);
         for (Point point: sb.wayPoint) nsb.wayPoint.add(new Point(point.x, point.y));
         for (Integer integer: sb.wayTurn) nsb.wayTurn.add(integer);
 
-        body.add(nsb);
+        MagicMachine.score.addScore(1, player.getName());
 
+        body.add(nsb);
         length = body.size();
     }
 
-    public Rectangle getRect() {
-        return new Rectangle(headPoint.x,headPoint.y, height, width);
+    public static Point toMove(Point p, int way) {
+        int x = p.x;
+        int y = p.y;
+        switch (way) {
+            case Const.DOWN: y += 1; break;
+            case Const.UP: y -= 1; break;
+            case Const.RIGHT: x += 1; break;
+            case Const.LEFT: x -= 1; break;
+        }
+        if (x >= Const.SIZE) x -= Const.SIZE;
+        if (y >= Const.SIZE) y -= Const.SIZE;
+        if (x < 0) x += Const.SIZE;
+        if (y < 0) y += Const.SIZE;
+        return new Point(x,y);
     }
 
-    public void CollisionWihtYourself (){
-        int i;
-        for(i = 0; i < body.size(); i ++)
-            if (body.get(i).getRect().intersects(getRect())) break;
-        for(int j = body.size()-1; j >=i; j--){
-            if(j!=i)
-                Pro.Paint.apples.add(new Apple(new Point(body.get(j).point.x,body.get(j).point.y)));
+    public static void choiceToKill(Snake one, Snake two) {
+        if (one.body.size() > two.body.size()) { //Если первая змея больше, убить вторую
+            two.kill();
+        } else if (one.body.size() < two.body.size()) { //Если вторая змея больше, убить первую
+            one.kill();
+        } else { //Если змеи одинаковы, убить обоих
+            one.kill();
+            two.kill();
+        }
+    }
+
+    public void kill() {
+        System.out.println("Snake #" + numberOfSnake + " is killed at [" + headPoint.x + "; " + headPoint.y + "]");
+        alive = false;
+        new Apple(headPoint);
+        for (SnakeBody aBody : body) new Apple(aBody.point);
+    }
+
+    public void cut(Point point) {
+        int k = 0;
+        for (int i = 0; i < body.size(); i++)
+            if (body.get(i).point.equals(point)) {
+                k = i;
+                break;
+            }
+        MagicMachine.score.addScore(-(body.size() - k - 1), player.getName());
+        for(int j = body.size()-1; j > k; j--) {
+            new Apple(body.get(j).point);
             body.remove(j);
         }
+    }
 
+    public boolean isAlive() {
+        return alive;
     }
 
 }
