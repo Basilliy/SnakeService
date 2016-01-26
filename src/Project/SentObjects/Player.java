@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 public class Player implements Serializable {
 
-    private final String name;
+    private String name;
     private final String address;
     private boolean ready;
     private int positionOnMap;
@@ -39,5 +39,9 @@ public class Player implements Serializable {
 
     public void setPositionOnMap(int positionOnMap) {
         this.positionOnMap = positionOnMap;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

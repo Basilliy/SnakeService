@@ -25,6 +25,7 @@ public class GameGUI extends JFrame implements Runnable {
     private JLabel place7st;
     private JLabel place8st;
     private JPanel notationForServer;
+    private JButton buttonExit;
 
 
     private ObjectOutputStream out;
@@ -91,6 +92,14 @@ public class GameGUI extends JFrame implements Runnable {
         labels[5] = place6st;
         labels[6] = place7st;
         labels[7] = place8st;
+
+
+
+        buttonExit.addActionListener(e -> {
+            System.out.println("buttonExit");
+        });
+
+
         setVisible(true);
     }
 
@@ -108,8 +117,11 @@ public class GameGUI extends JFrame implements Runnable {
                 } else
                 if (object.getClass().equals(String.class)) {
                     String s = (String) object;
-                    s = s.substring(Const.STATUS.length());
-                    JOptionPane.showMessageDialog(this, s);
+                    s = s.substring(Const.CHAT.length());
+                    if (s.endsWith(" покинул комнату\n")) {
+                        s = s.substring("Игрок ".length(), s.length() - " покинул комнату\n".length());
+                        System.out.println(s);
+                    }
                 } else
                 if (object.getClass().equals(Integer.class)) {
                     int i = (int) object;

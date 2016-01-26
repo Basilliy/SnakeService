@@ -88,10 +88,35 @@ public class MagicMachine {
         new Apple(12,13);
         new Apple(13,13);
 
-        new Beetle(14,14);
-        new Beetle(14,15);
-        new Beetle(14,16);
-        new Beetle(14,17);
+//        new Beetle(14,14);
+//        new Beetle(14,15);
+//        new Beetle(14,16);
+//        new Beetle(14,17);
+//
+//        new Beetle(15,14);
+//        new Beetle(15,15);
+//        new Beetle(15,16);
+//        new Beetle(15,17);
+//
+//        new Beetle(16,14);
+//        new Beetle(16,15);
+//        new Beetle(16,16);
+//        new Beetle(16,17);
+//
+//        new Beetle(17,14);
+//        new Beetle(17,15);
+//        new Beetle(17,16);
+//        new Beetle(17,17);
+//
+//        new Beetle(18,14);
+//        new Beetle(18,15);
+//        new Beetle(18,16);
+//        new Beetle(18,17);
+//
+//        new Beetle(19,14);
+//        new Beetle(19,15);
+//        new Beetle(19,16);
+//        new Beetle(19,17);
 
 
         Timer timer = new Timer(Const.TIMER, e -> doSomething());

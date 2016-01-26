@@ -8,7 +8,6 @@ public class Const {
     public static final int BEETLE = -20;
 
     public static final String CHAT = "#CHAT:";
-    public static final String STATUS = "#STATUS:";
     public static final String ERROR = "#ERROR:";
     public static final String START = "#START:";
     public static final String PATH = "src/Images/";
@@ -23,6 +22,7 @@ public class Const {
     public static final int TIMER = 500; // Время в миллисекундах
     public static final Point RESTRICTION = new Point(DELAY * 30, DELAY * 30); // Верхнее ограничение
     public static final int SIZE = RESTRICTION.x/DELAY;
+    public static final int VICTORY = 100; //Счет для победы
 
     //Константы позиций на карте
     public static final int MAP_NOT_CHOSEN = 0;

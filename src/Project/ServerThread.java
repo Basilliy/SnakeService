@@ -96,9 +96,21 @@ public class ServerThread extends Thread {
                 synchronized (oos) { oos.remove(out); }
                 sendAll(players);
                 sendAll(Const.CHAT + "Игрок " + player.getName() + " покинул комнату\n");
+                if (ServerController.gameIsStarted) {
+                    thoughtOutPlayer();
+                }
                 break;
             }
         }
+    }
+
+    private void thoughtOutPlayer() {
+        MagicMachine.score.playerCameOut(player.getName());
+        for (Snake snake : MagicMachine.snakes)
+            if (snake.player.getName().equals(player.getName())) {
+                snake.kill();
+                break;
+            }
     }
 
     private void sendAll(Object message) {

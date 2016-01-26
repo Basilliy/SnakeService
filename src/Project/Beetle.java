@@ -7,16 +7,19 @@ public class Beetle {
     public Point point;
     private int way;
     private int counter = 0;
-    private Random random;
 
     public Beetle(Point point) {
         this.point = point;
         MagicMachine.beetles.add(this);
+        turn();
+        MagicMachine.board[point.x][point.y]= Const.BEETLE - way;
     }
 
     public Beetle(int x, int y) {
         point = new Point(x,y);
         MagicMachine.beetles.add(this);
+        turn();
+        MagicMachine.board[point.x][point.y]= Const.BEETLE - way;
     }
 
     public void move() {
@@ -32,8 +35,8 @@ public class Beetle {
         } else turn();
     }
 
-    public void turn() {
-        random = new Random();
+    private void turn() {
+        Random random = new Random();
         counter = random.nextInt(4) + 2;
         way = random.nextInt(4);
     }

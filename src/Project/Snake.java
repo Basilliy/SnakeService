@@ -13,7 +13,7 @@ public class Snake {
     public int headWay;
     public int numberOfSnake; // 1 или более
     private int[][] board;
-    private Player player;
+    public Player player;
     private boolean alive = true;
 
     public Snake(int x, int y, int way, int numberOfSnake, int[][] board) {
@@ -121,6 +121,7 @@ public class Snake {
         length = body.size();
     }
 
+    /** Расчет следующего шага */
     public static Point toMove(Point p, int way) {
         int x = p.x;
         int y = p.y;
@@ -137,24 +138,33 @@ public class Snake {
         return new Point(x,y);
     }
 
+    /** Выбор змеи для убийства */
     public static void choiceToKill(Snake one, Snake two) {
         if (one.body.size() > two.body.size()) { //Если первая змея больше, убить вторую
             two.kill();
+            MagicMachine.score.playerKilled(two.player.getName());
         } else if (one.body.size() < two.body.size()) { //Если вторая змея больше, убить первую
             one.kill();
+            MagicMachine.score.playerKilled(one.player.getName());
         } else { //Если змеи одинаковы, убить обоих
             one.kill();
             two.kill();
+            MagicMachine.score.playerKilled(one.player.getName());
+            MagicMachine.score.playerKilled(two.player.getName());
         }
     }
 
+    /** Убийство змеи */
     public void kill() {
         System.out.println("Snake #" + numberOfSnake + " is killed at [" + headPoint.x + "; " + headPoint.y + "]");
         alive = false;
-        new Apple(headPoint);
-        for (SnakeBody aBody : body) new Apple(aBody.point);
+//        new Apple(headPoint);
+//        for (SnakeBody aBody : body) new Apple(aBody.point);
+        new Beetle(headPoint);
+        for (SnakeBody aBody : body) new Beetle(aBody.point);
     }
 
+    /** Обрезание змеи */
     public void cut(Point point) {
         int k = 0;
         for (int i = 0; i < body.size(); i++)
@@ -165,6 +175,7 @@ public class Snake {
         MagicMachine.score.addScore(-(body.size() - k - 1), player.getName());
         for(int j = body.size()-1; j > k; j--) {
             new Apple(body.get(j).point);
+//            new Beetle(body.get(j).point);
             body.remove(j);
         }
     }

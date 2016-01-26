@@ -1,5 +1,7 @@
 package Project.SentObjects;
 
+import Project.MagicMachine;
+
 import java.io.Serializable;
 
 public class Score implements Serializable {
@@ -39,4 +41,27 @@ public class Score implements Serializable {
         }
         return s;
     }
+
+    public void playerCameOut(String name) {
+        for (int i = 0; i < names.length; i++)
+            if (names[i].equals(name)) {
+                names[i] += " (вышел)";
+                break;
+            }
+        for (Player player : MagicMachine.players)
+            if (player.getName().equals(name)) {
+                MagicMachine.players.remove(player);
+                break;
+            }
+    }
+
+    public void playerKilled(String name) {
+        for (int i = 0; i < names.length; i++)
+            if (names[i].equals(name)) {
+                names[i] += " (убит)";
+                break;
+            }
+    }
+
+
 }

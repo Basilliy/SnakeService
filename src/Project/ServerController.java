@@ -14,14 +14,11 @@ public class ServerController extends Thread {
     private static final ArrayList<ObjectOutputStream> oos = new ArrayList<>();
     private static final ArrayList<Player> players = new ArrayList<>();
     private static int[] ways = new int[8];
-    private static boolean gameIsStarted = false;
-    private int p = 0;
+    public static boolean gameIsStarted = false;
 
     public ServerController(int PORT) {
         super("ServerController");
         ServerController.PORT = PORT;
-
-
         start();
     }
 
