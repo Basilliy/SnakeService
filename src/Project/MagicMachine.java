@@ -15,12 +15,11 @@ public class MagicMachine {
     private final ArrayList<ObjectOutputStream> oos;
     public static ArrayList<Player> players;
     public static final ArrayList<Snake> snakes = new ArrayList<>();
-    private int[] ways;
+    public static final ArrayList<Beetle> beetles = new ArrayList<>();
+    private final int[] ways;
     public static Score score;
-    private Timer timer;
-    public static int[][] board = new int[Const.RESTRICTIONS_MAX.x / Const.DELAY][Const.RESTRICTIONS_MAX.y / Const.DELAY];
+    public static int[][] board = new int[Const.SIZE][Const.SIZE];
     public static Apple mainApple;
-//    public static ArrayList<Apple> apples = new ArrayList<>();
 
     public MagicMachine(ArrayList<ObjectOutputStream> oos, ArrayList<Player> players, int[] ways) {
         this.oos = oos;
@@ -89,9 +88,13 @@ public class MagicMachine {
         new Apple(12,13);
         new Apple(13,13);
 
+        new Beetle(14,14);
+        new Beetle(14,15);
+        new Beetle(14,16);
+        new Beetle(14,17);
 
 
-        timer = new Timer(Const.TIMER, e -> doSomething());
+        Timer timer = new Timer(Const.TIMER, e -> doSomething());
         timer.start();
     }
 
@@ -109,6 +112,10 @@ public class MagicMachine {
         for (Snake snake : snakes)
             if (snake.isAlive())
                 snake.move();
+
+        for (Beetle beetle : beetles)
+            beetle.move();
+
         toClient();
     }
 

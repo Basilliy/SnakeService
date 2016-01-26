@@ -32,15 +32,16 @@ public class GameGUI extends JFrame implements Runnable {
     private boolean working = true;
     private boolean canChangeWay = false;
     private int way;
-    private int[][] board = new int[Const.RESTRICTIONS_MAX.x / Const.DELAY]
-            [Const.RESTRICTIONS_MAX.y / Const.DELAY];
+    private int[][] board = new int[Const.RESTRICTION.x / Const.DELAY]
+            [Const.RESTRICTION.y / Const.DELAY];
     private JLabel[] labels = new JLabel[8];
     private Image apple;
     private Image body0;
     private Image[] body = new Image[8];
     private Image[] head = new Image[4];
-    private BufferedImage backgroundImage = new BufferedImage(Const.RESTRICTIONS_MAX.x,
-            Const.RESTRICTIONS_MAX.y, BufferedImage.TYPE_INT_RGB);
+    private Image[] beetle = new Image[4];
+    private BufferedImage backgroundImage = new BufferedImage(Const.RESTRICTION.x,
+            Const.RESTRICTION.y, BufferedImage.TYPE_INT_RGB);
     private Graphics g = backgroundImage.getGraphics();
 
 
@@ -57,13 +58,17 @@ public class GameGUI extends JFrame implements Runnable {
             head[1] = ImageIO.read(new File(Const.PATH + "headLeft.png"));
             head[2] = ImageIO.read(new File(Const.PATH + "headRight.png"));
             head[3] = ImageIO.read(new File(Const.PATH + "headUp.png"));
+            beetle[0] = ImageIO.read(new File(Const.PATH + "beetleDown.png"));
+            beetle[1] = ImageIO.read(new File(Const.PATH + "beetleLeft.png"));
+            beetle[2] = ImageIO.read(new File(Const.PATH + "beetleRight.png"));
+            beetle[3] = ImageIO.read(new File(Const.PATH + "beetleUp.png"));
             for (int i = 0; i < 8; i++)
                 body[i] = ImageIO.read(new File(Const.PATH + "body" + (i + 1) + ".png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
 
-        gamePanel.setSize(Const.RESTRICTIONS_MAX.x, Const.RESTRICTIONS_MAX.y);
+        gamePanel.setSize(Const.RESTRICTION.x, Const.RESTRICTION.y);
         gamePanel.setMinimumSize(gamePanel.getSize());
         gamePanel.setMaximumSize(gamePanel.getSize());
 
@@ -72,8 +77,8 @@ public class GameGUI extends JFrame implements Runnable {
 
 //        setLocationRelativeTo(owner);
         setTitle("SnakeService - " + player.getName());
-        if (server) setSize(Const.RESTRICTIONS_MAX.x + 300, Const.RESTRICTIONS_MAX.y + 50);
-        else setSize(Const.RESTRICTIONS_MAX.x + 160, Const.RESTRICTIONS_MAX.y + 50);
+        if (server) setSize(Const.RESTRICTION.x + 300, Const.RESTRICTION.y + 50);
+        else setSize(Const.RESTRICTION.x + 160, Const.RESTRICTION.y + 50);
         setMaximumSize(getSize());
         setMinimumSize(getSize());
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -112,6 +117,7 @@ public class GameGUI extends JFrame implements Runnable {
                 } else
                     System.out.println("GameGUI: Not supported " + object.getClass());
             } catch (Exception e) {
+                e.printStackTrace();
                 JOptionPane.showMessageDialog(GameGUI.this, "Сервер отключился");
                 System.exit(0);
                 break;
@@ -134,30 +140,32 @@ public class GameGUI extends JFrame implements Runnable {
 
         for (int i = 0; i < board.length; i++) {
             for (int j = 0; j < board[0].length; j++) {
-                Image image;
-                if (board[i][j] == -1) {
-                    image = apple;
-                    g.drawImage(image, i*Const.DELAY, j*Const.DELAY, null);
-                }
-                if (board[i][j] > 0) {
-                    int d = board[i][j];
-                    if (d%10 != 4) {
-                        image = head[d%10];
-                    } else {
-                        switch (d) {
-                            case 14: image = body[0]; break;
-                            case 24: image = body[1]; break;
-                            case 34: image = body[2]; break;
-                            case 44: image = body[3]; break;
-                            case 54: image = body[4]; break;
-                            case 64: image = body[5]; break;
-                            case 74: image = body[6]; break;
-                            case 84: image = body[7]; break;
-                            default: image = body0;
+                Image image = null;
+                int d = board[i][j];
+                if (d != 0) {
+                    if (d > 0) {
+                        if (d%10 != 4) {
+                            image = head[d%10];
+                        } else {
+                            switch (d) {
+                                case 14: image = body[0]; break;
+                                case 24: image = body[1]; break;
+                                case 34: image = body[2]; break;
+                                case 44: image = body[3]; break;
+                                case 54: image = body[4]; break;
+                                case 64: image = body[5]; break;
+                                case 74: image = body[6]; break;
+                                case 84: image = body[7]; break;
+                                default: image = body0;
+                            }
                         }
+                    } else {
+                        if (d == Const.APPLE) image = apple;
+                        else image = beetle[-d % 10];
                     }
-                    g.drawImage(image, i*Const.DELAY, j*Const.DELAY, null);
                 }
+
+                g.drawImage(image, i*Const.DELAY, j*Const.DELAY, null);
             }
         }
 

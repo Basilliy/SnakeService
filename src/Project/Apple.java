@@ -7,12 +7,12 @@ public class Apple {
 
     public Apple(Point point) {
         this.point = point;
-        MagicMachine.board[point.x][point.y] = -1;
+        MagicMachine.board[point.x][point.y] = Const.APPLE;
     }
 
     public Apple(int x, int y) {
         point = new Point(x,y);
-        MagicMachine.board[point.x][point.y] = -1;
+        MagicMachine.board[point.x][point.y] = Const.APPLE;
     }
 
 }

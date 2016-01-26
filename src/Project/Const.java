@@ -1,16 +1,16 @@
 package Project;
 
-import com.sun.org.apache.regexp.internal.RE;
 
 import java.awt.*;
 
 public class Const {
+    public static final int APPLE = -1;
+    public static final int BEETLE = -20;
+
     public static final String CHAT = "#CHAT:";
     public static final String STATUS = "#STATUS:";
     public static final String ERROR = "#ERROR:";
     public static final String START = "#START:";
-    public static final String BOARD = "#BOARD:";
-    public static final String WAY = "#WAY:";
     public static final String PATH = "src/Images/";
     public static final int PORT = 55000;
 
@@ -21,9 +21,8 @@ public class Const {
 
     public static final int DELAY = 16;
     public static final int TIMER = 500; // Время в миллисекундах
-    public static final Point RESTRICTIONS_MAX = new Point(DELAY * 30, DELAY * 30); // Верхнее ограничение
-    public static final Point RESTRICTIONS_MIN = new Point(0, 0); // Нижнее ограничение
-    public static final int SIZE = RESTRICTIONS_MAX.x/DELAY;
+    public static final Point RESTRICTION = new Point(DELAY * 30, DELAY * 30); // Верхнее ограничение
+    public static final int SIZE = RESTRICTION.x/DELAY;
 
     //Константы позиций на карте
     public static final int MAP_NOT_CHOSEN = 0;

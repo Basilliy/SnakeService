@@ -41,8 +41,8 @@ public class SnakeBody {
 
     /** Рисуемся на текущих координатах */
     public void paint(int numberOfSnake) {
-//        if (point.x >= 0 && point.y >= 0 && point.x < Const.RESTRICTIONS_MAX.x/Const.DELAY &&
-//                point.y < Const.RESTRICTIONS_MAX.y/Const.DELAY)
+//        if (point.x >= 0 && point.y >= 0 && point.x < Const.RESTRICTION.x/Const.DELAY &&
+//                point.y < Const.RESTRICTION.y/Const.DELAY)
         board[point.x][point.y] = (numberOfSnake * 10) + 4;
     }
 

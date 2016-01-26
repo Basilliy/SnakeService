@@ -1,5 +1,5 @@
 # SnakeService
-##### ver 0.10
+##### ver 0.11
     This is a game Snake for more then one player (now maximum is 8). 
     Now game work only in local network. (work in infinity loop).
     

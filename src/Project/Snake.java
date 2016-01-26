@@ -11,7 +11,7 @@ public class Snake {
     public int length;
     public ArrayList<SnakeBody> body = new ArrayList<>();
     public int headWay;
-    public int numberOfSnake = 1; // 1 или более
+    public int numberOfSnake; // 1 или более
     private int[][] board;
     private Player player;
     private boolean alive = true;
@@ -51,29 +51,30 @@ public class Snake {
 
             boolean b = false;
             // поедание яблока
-            if (board[x][y] != 0) {
-                if (board[x][y] == -1) {
-                    if (MagicMachine.mainApple.point.equals(point))
-                        MagicMachine.mainApple = null;
-//                    for (Apple apple : MagicMachine.apples)
-//                        if (apple.point.equals(point)) {
-//                            MagicMachine.apples.remove(apple);
-//                            break;
-//                        }
-                    bodyIncrease();
-                    b = true;
-                } else {
-                    int d = board[x][y];
-                    System.out.println("SnakeNumber = " + numberOfSnake + "; d = " + d);
-                    Snake snake = MagicMachine.snakes.get(d / 10 - 1);
-                    if (d % 10 != 4) {
-                        Snake.choiceToKill(this, snake);
-                    } else {
-                        Point point1 = snake.body.get(0).point;
-                        if (point1.equals(point)) Snake.choiceToKill(this, snake);
-                        else {
-                            snake.cut(point);
+            int d = board[x][y];
+            if (d != 0) if (d < 0) {
+                if (MagicMachine.mainApple.point.equals(point))
+                    MagicMachine.mainApple = null;
+                if (d <= -20 && d >= -23) {
+                    MagicMachine.score.addScore(2, player.getName());
+                    for (Beetle beetle : MagicMachine.beetles) {
+                        if (beetle.point.equals(point)) {
+                            MagicMachine.beetles.remove(beetle);
+                            break;
                         }
+                    }
+                }
+                bodyIncrease();
+                b = true;
+            } else {
+                Snake snake = MagicMachine.snakes.get(d / 10 - 1);
+                if (d % 10 != 4) {
+                    Snake.choiceToKill(this, snake);
+                } else {
+                    Point point1 = snake.body.get(0).point;
+                    if (point1.equals(point)) Snake.choiceToKill(this, snake);
+                    else {
+                        snake.cut(point);
                     }
                 }
             }
