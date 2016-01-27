@@ -3,6 +3,7 @@ package Project.GUI;
 import Project.Const;
 import Project.ServerController;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
