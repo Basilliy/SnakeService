@@ -80,13 +80,16 @@ public class ServerThread extends Thread {
                         if (checkPlayersPositions()) sendAll(Const.START);
                         else sendAll(Const.CHAT + "<Сервер>:Начальные позиции всех " +
                                 "игроков не должны совпадать\n");
+                    } else if (s.equals(Const.EXIT)) {
+                        throw new Exception("Выход игрока по нажатию кнопки");
                     } else {
                         sendAll(object);
                     }
                 } else {
                     sendAll(object);
                 }
-            } catch (IOException | ClassNotFoundException e) {
+            } catch (Exception e) {
+                e.printStackTrace();
                 synchronized (players) {
                     for (Player p : players)
                         if (p.getName().equals(player.getName())) {
@@ -96,9 +99,7 @@ public class ServerThread extends Thread {
                 synchronized (oos) { oos.remove(out); }
                 sendAll(players);
                 sendAll(Const.CHAT + "Игрок " + player.getName() + " покинул комнату\n");
-                if (ServerController.gameIsStarted) {
-                    thoughtOutPlayer();
-                }
+                if (ServerController.gameIsStarted) thoughtOutPlayer();
                 break;
             }
         }

@@ -10,6 +10,8 @@ import java.net.InetAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.Objects;
+import java.util.Properties;
 
 public class SelectRoomGUI extends JFrame{
     private JPanel mainPanel;
@@ -25,6 +27,7 @@ public class SelectRoomGUI extends JFrame{
     private File rooms = new File("src/Data/Servers.txt");
     private ArrayList<ListItem> list;
     private final static int PORT = Const.PORT;
+    private Properties properties = new Properties();
 
 
     public SelectRoomGUI() {
@@ -36,8 +39,18 @@ public class SelectRoomGUI extends JFrame{
         setVisible(true);
         try {
             bottomLabel.setText(InetAddress.getLocalHost().toString());
-            textField.setText(InetAddress.getLocalHost().getHostName());
-        } catch (UnknownHostException e) { /*Nothing TO DO */ }
+            String name = InetAddress.getLocalHost().getHostName();
+            properties.load(new FileInputStream(new File(Const.PATH_CONFIG)));
+            String s = properties.getProperty(Const.CONFIG_NAME);
+            if (s == null) {
+                properties.setProperty(Const.CONFIG_NAME, name);
+                properties.store(new FileOutputStream(new File(Const.PATH_CONFIG)),
+                        "File for store data about name of player");
+            }
+            else name = s;
+
+            textField.setText(name);
+        } catch (Exception ignore) {}
 
         readRooms();
 
@@ -140,6 +153,7 @@ public class SelectRoomGUI extends JFrame{
             try {
                 Socket socket = new Socket(InetAddress.getByName(item.ip), PORT);
                 this.setVisible(false);
+                saveNameInConfig();
                 RoomGUI roomGUI = new RoomGUI(socket, name, SelectRoomGUI.this, false);
                 (new Thread(roomGUI)).start();
             } catch (IOException e) {
@@ -157,6 +171,7 @@ public class SelectRoomGUI extends JFrame{
                 System.out.println("LocalHost = " + InetAddress.getLocalHost());
                 Socket socket = new Socket(InetAddress.getLoopbackAddress(), PORT);
                 this.setVisible(false);
+                saveNameInConfig();
                 RoomGUI roomGUI = new RoomGUI(socket, name, SelectRoomGUI.this, true);
                 (new Thread(roomGUI)).start();
             } catch (IOException e) {
@@ -165,6 +180,17 @@ public class SelectRoomGUI extends JFrame{
             }
         } else {
             JOptionPane.showMessageDialog(SelectRoomGUI.this, "Введите имя");
+        }
+    }
+
+    private void saveNameInConfig() {
+        String name = textField.getText();
+        if (!Objects.equals(name, "")) {
+            try {
+                properties.setProperty(Const.CONFIG_NAME, name);
+                properties.store(new FileOutputStream(new File(Const.PATH_CONFIG)),
+                        "File for store data about name of player");
+            } catch (Exception ignore) {}
         }
     }
 

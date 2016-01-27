@@ -53,18 +53,18 @@ public class GameGUI extends JFrame implements Runnable {
         this.in = in;
 
         try {
-            body0 = ImageIO.read(new File(Const.PATH + "body.png"));
-            apple = ImageIO.read(new File(Const.PATH + "apple.png"));
-            head[0] = ImageIO.read(new File(Const.PATH + "headDown.png"));
-            head[1] = ImageIO.read(new File(Const.PATH + "headLeft.png"));
-            head[2] = ImageIO.read(new File(Const.PATH + "headRight.png"));
-            head[3] = ImageIO.read(new File(Const.PATH + "headUp.png"));
-            beetle[0] = ImageIO.read(new File(Const.PATH + "beetleDown.png"));
-            beetle[1] = ImageIO.read(new File(Const.PATH + "beetleLeft.png"));
-            beetle[2] = ImageIO.read(new File(Const.PATH + "beetleRight.png"));
-            beetle[3] = ImageIO.read(new File(Const.PATH + "beetleUp.png"));
+            body0 = ImageIO.read(new File(Const.PATH_IMAGES + "body.png"));
+            apple = ImageIO.read(new File(Const.PATH_IMAGES + "apple.png"));
+            head[0] = ImageIO.read(new File(Const.PATH_IMAGES + "headDown.png"));
+            head[1] = ImageIO.read(new File(Const.PATH_IMAGES + "headLeft.png"));
+            head[2] = ImageIO.read(new File(Const.PATH_IMAGES + "headRight.png"));
+            head[3] = ImageIO.read(new File(Const.PATH_IMAGES + "headUp.png"));
+            beetle[0] = ImageIO.read(new File(Const.PATH_IMAGES + "beetleDown.png"));
+            beetle[1] = ImageIO.read(new File(Const.PATH_IMAGES + "beetleLeft.png"));
+            beetle[2] = ImageIO.read(new File(Const.PATH_IMAGES + "beetleRight.png"));
+            beetle[3] = ImageIO.read(new File(Const.PATH_IMAGES + "beetleUp.png"));
             for (int i = 0; i < 8; i++)
-                body[i] = ImageIO.read(new File(Const.PATH + "body" + (i + 1) + ".png"));
+                body[i] = ImageIO.read(new File(Const.PATH_IMAGES + "body" + (i + 1) + ".png"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -96,11 +96,23 @@ public class GameGUI extends JFrame implements Runnable {
 
 
         buttonExit.addActionListener(e -> {
-            System.out.println("buttonExit");
+            onClickExit();
         });
 
 
         setVisible(true);
+    }
+
+    private void onClickExit() {
+        synchronized (out) {
+            try {
+                out.writeObject(Const.EXIT);
+                out.reset();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        System.exit(1);
     }
 
     @Override

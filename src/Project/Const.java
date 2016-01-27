@@ -10,7 +10,10 @@ public class Const {
     public static final String CHAT = "#CHAT:";
     public static final String ERROR = "#ERROR:";
     public static final String START = "#START:";
-    public static final String PATH = "src/Images/";
+    public static final String EXIT = "#EXIT:";
+    public static final String PATH_IMAGES = "src/Images/";
+    public static final String PATH_CONFIG = "src/Data/Config.ini";
+    public static final String CONFIG_NAME = "Name";
     public static final int PORT = 55000;
 
     public static final int DOWN = 0;
