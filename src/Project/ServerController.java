@@ -59,7 +59,7 @@ public class ServerController extends Thread {
         }
 
         if (gameIsStarted) {
-            new MagicMachine(oos, players, ways);
+            Const.MACHINE = new MagicMachine(oos, players, ways);
         }
     }
 }

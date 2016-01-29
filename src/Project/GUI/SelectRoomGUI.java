@@ -3,13 +3,11 @@ package Project.GUI;
 import Project.Const;
 import Project.ServerController;
 
-import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
 import java.net.InetAddress;
 import java.net.Socket;
-import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Objects;
 import java.util.Properties;
@@ -153,13 +151,16 @@ public class SelectRoomGUI extends JFrame{
         if (!name.equals("")) {
             try {
                 Socket socket = new Socket(InetAddress.getByName(item.ip), PORT);
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                Const.SERVER_OUT = out;
+                Const.SERVER_IN = in;
                 this.setVisible(false);
                 saveNameInConfig();
-                RoomGUI roomGUI = new RoomGUI(socket, name, SelectRoomGUI.this, false);
+                RoomGUI roomGUI = new RoomGUI(out, in, name, SelectRoomGUI.this, false);
                 (new Thread(roomGUI)).start();
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(SelectRoomGUI.this, "Не получилось подключится к комнате");
-                System.err.println("Неизвестный хост");
             }
         } else { JOptionPane.showMessageDialog(SelectRoomGUI.this, "Введите имя"); }
     }
@@ -171,13 +172,17 @@ public class SelectRoomGUI extends JFrame{
                 System.out.println("LoopbackAddress = " + InetAddress.getLoopbackAddress());
                 System.out.println("LocalHost = " + InetAddress.getLocalHost());
                 Socket socket = new Socket(InetAddress.getLoopbackAddress(), PORT);
+                ObjectOutputStream out = new ObjectOutputStream(socket.getOutputStream());
+                ObjectInputStream in = new ObjectInputStream(socket.getInputStream());
+                Const.IS_SERVER = true;
+                Const.SERVER_OUT = out;
+                Const.SERVER_IN = in;
                 this.setVisible(false);
                 saveNameInConfig();
-                RoomGUI roomGUI = new RoomGUI(socket, name, SelectRoomGUI.this, true);
+                RoomGUI roomGUI = new RoomGUI(out, in, name, SelectRoomGUI.this, true);
                 (new Thread(roomGUI)).start();
             } catch (IOException e) {
                 JOptionPane.showMessageDialog(SelectRoomGUI.this, "Не получилось подключится к комнате");
-                System.err.println("Неизвестный хост");
             }
         } else {
             JOptionPane.showMessageDialog(SelectRoomGUI.this, "Введите имя");

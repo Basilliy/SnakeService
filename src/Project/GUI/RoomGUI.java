@@ -13,7 +13,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.InetAddress;
-import java.net.Socket;
 import java.util.ArrayList;
 
 public class RoomGUI extends JFrame implements Runnable {
@@ -35,7 +34,8 @@ public class RoomGUI extends JFrame implements Runnable {
     private boolean server;
     private boolean working = true;
 
-    public RoomGUI(Socket socket, String name, JFrame owner, boolean server) {
+    public RoomGUI(ObjectOutputStream out, ObjectInputStream in, String name, JFrame owner, boolean server) {
+        if (Const.PLAYER_LIST != null) players = Const.PLAYER_LIST;
         this.server = server;
         setTitle(name);
         setContentPane(mainPanel);
@@ -44,6 +44,7 @@ public class RoomGUI extends JFrame implements Runnable {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(owner);
         roomButtonStartGame.setVisible(server);
+        roomComboBox.removeAllItems();
         roomComboBox.addItem(Const.STRING_NOT_CHOSEN);
         roomComboBox.addItem(Const.STRING_UP_LEFT);
         roomComboBox.addItem(Const.STRING_UP);
@@ -54,10 +55,11 @@ public class RoomGUI extends JFrame implements Runnable {
         roomComboBox.addItem(Const.STRING_DOWN_LEFT);
         roomComboBox.addItem(Const.STRING_LEFT);
         try {
-            out = new ObjectOutputStream(socket.getOutputStream());
-            in = new ObjectInputStream(socket.getInputStream());
+            this.out = out;
+            this.in = in;
             bottomLabel.setText(name + " (" + InetAddress.getLocalHost() + ")");
             player = new Player(name, InetAddress.getLocalHost().getHostAddress(), false, Const.MAP_NOT_CHOSEN);
+            Const.PLAYER = player;
         } catch (IOException e) {
             JOptionPane.showMessageDialog(RoomGUI.this, "Ошибка подключения");
             System.exit(0);
@@ -89,9 +91,9 @@ public class RoomGUI extends JFrame implements Runnable {
 
     private void startGame() {
         if (server) ServerController.setGameIsStarted(true);
-
+        setVisible(false);
         working = false;
-        RoomGUI.this.setVisible(false);
+        Const.ROOM = this;
         GameGUI gameGUI = new GameGUI(player, out, in, server, RoomGUI.this);
         Thread thread = new Thread(gameGUI);
         thread.start();
@@ -123,6 +125,7 @@ public class RoomGUI extends JFrame implements Runnable {
         if (player.getPositionOnMap() != Const.MAP_NOT_CHOSEN) {
             player.setReady(!player.isReady());
             roomComboBox.setEnabled(!player.isReady());
+            Const.PLAYER = player;
             try {
                 out.writeObject(player);
                 out.reset();
@@ -133,6 +136,7 @@ public class RoomGUI extends JFrame implements Runnable {
     }
 
     private void updatePlayers() {
+        Const.PLAYER_LIST = players;
         String[] columnNames = new String[]{"Имя", "Адресс", "Готовность", "Позиция"};
         Object[][] obj = new Object[players.size()][4];
         for (int i = 0; i < players.size(); i++) {

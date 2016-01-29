@@ -14,14 +14,18 @@ import java.util.Random;
 public class MagicMachine {
     private final ArrayList<ObjectOutputStream> oos;
     public static ArrayList<Player> players;
-    public static final ArrayList<Snake> snakes = new ArrayList<>();
-    public static final ArrayList<Beetle> beetles = new ArrayList<>();
+    public static ArrayList<Snake> snakes;
+    public static ArrayList<Beetle> beetles;
     private final int[] ways;
     public static Score score;
-    public static int[][] board = new int[Const.SIZE][Const.SIZE];
+    public static int[][] board;
     public static Apple mainApple;
+    private Timer timer;
 
     public MagicMachine(ArrayList<ObjectOutputStream> oos, ArrayList<Player> players, int[] ways) {
+        board = new int[Const.SIZE][Const.SIZE];
+        snakes = new ArrayList<>();
+        beetles = new ArrayList<>();
         this.oos = oos;
         MagicMachine.players = players;
         int size = oos.size();
@@ -31,7 +35,6 @@ public class MagicMachine {
             playersNames[i] = players.get(i).getName();
         score = new Score(new int[size], playersNames);
 
-        // Установка начальное значение направлений
         for (int i = 0; i < players.size(); i++) {
             int way = -1;
             switch (players.get(i).getPositionOnMap()) {
@@ -47,7 +50,6 @@ public class MagicMachine {
             ways[i] = way;
         }
 
-//          Принять начальное значение положения
         int position;
         int x=0, y=0;
         for (int i = 0; i < players.size(); i++) {
@@ -66,10 +68,6 @@ public class MagicMachine {
 
             snakes.add(sn);
         }
-        // Установика начальное значение очков
-//        for (Player player : players)  //Всем плюс +3
-//            score.addScore(3, player.getName());
-
 
         new Apple(10,10);
         new Apple(11,10);
@@ -88,38 +86,7 @@ public class MagicMachine {
         new Apple(12,13);
         new Apple(13,13);
 
-//        new Beetle(14,14);
-//        new Beetle(14,15);
-//        new Beetle(14,16);
-//        new Beetle(14,17);
-//
-//        new Beetle(15,14);
-//        new Beetle(15,15);
-//        new Beetle(15,16);
-//        new Beetle(15,17);
-//
-//        new Beetle(16,14);
-//        new Beetle(16,15);
-//        new Beetle(16,16);
-//        new Beetle(16,17);
-//
-//        new Beetle(17,14);
-//        new Beetle(17,15);
-//        new Beetle(17,16);
-//        new Beetle(17,17);
-//
-//        new Beetle(18,14);
-//        new Beetle(18,15);
-//        new Beetle(18,16);
-//        new Beetle(18,17);
-//
-//        new Beetle(19,14);
-//        new Beetle(19,15);
-//        new Beetle(19,16);
-//        new Beetle(19,17);
-
-
-        Timer timer = new Timer(Const.TIMER, e -> doSomething());
+        timer = new Timer(Const.TIMER, e -> doSomething());
         timer.start();
     }
 
@@ -133,7 +100,6 @@ public class MagicMachine {
         }
         if (mainApple == null) mainApple = new Apple(createPointForApple());
         board[mainApple.point.x][mainApple.point.y] = -1;
-//        for (Apple apple: apples) board[apple.point.x][apple.point.y] = -1;
         for (Snake snake : snakes)
             if (snake.isAlive())
                 snake.move();
@@ -141,7 +107,10 @@ public class MagicMachine {
         for (Beetle beetle : beetles)
             beetle.move();
 
-        toClient();
+        write(new Board(board));
+        write(score);
+        String winner = score.getWinner();
+        if (winner != null) write(Const.WINNER + winner);
     }
 
     private Point createPointForApple() {
@@ -156,26 +125,21 @@ public class MagicMachine {
         return new Point(x,y);
     }
 
-    private void toClient() {
-
-//        System.out.println();
-//        for (int[] aBoard : board) {
-//            for (int i1 = 0; i1 < board.length; i1++)
-//                System.out.print(aBoard[i1]);
-//            System.out.println();
-//        }
-
+    private void write(Object o) {
         synchronized (oos) {
             for (ObjectOutputStream out : oos) {
                 try {
-                    out.writeObject(new Board(board));
-                    out.writeObject(score);
+                    out.writeObject(o);
                     out.reset();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         }
+    }
+
+    public void stop() {
+        timer.stop();
     }
 
 }

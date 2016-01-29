@@ -1,9 +1,11 @@
 package Project.GUI;
 
+import Project.MagicMachine;
 import Project.SentObjects.Board;
 import Project.Const;
 import Project.SentObjects.Player;
 import Project.SentObjects.Score;
+import Project.ServerController;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -129,15 +131,11 @@ public class GameGUI extends JFrame implements Runnable {
                 } else
                 if (object.getClass().equals(String.class)) {
                     String s = (String) object;
-                    s = s.substring(Const.CHAT.length());
-                    if (s.endsWith(" покинул комнату\n")) {
-                        s = s.substring("Игрок ".length(), s.length() - " покинул комнату\n".length());
-                        System.out.println(s);
+                    if (s.startsWith(Const.WINNER)) {
+                        s = s.substring(Const.WINNER.length());
+                        JOptionPane.showMessageDialog(this, "Выиграл игрок: " + s);
+                        endWork();
                     }
-                } else
-                if (object.getClass().equals(Integer.class)) {
-                    int i = (int) object;
-                    System.out.println("int: " + i);
                 } else
                     System.out.println("GameGUI: Not supported " + object.getClass());
             } catch (Exception e) {
@@ -147,6 +145,23 @@ public class GameGUI extends JFrame implements Runnable {
                 break;
             }
         }
+    }
+
+    private void endWork() {
+        setVisible(false);
+        working = false;
+        RoomGUI room = new RoomGUI(Const.SERVER_OUT, Const.SERVER_IN, Const.PLAYER.getName(), this, Const.IS_SERVER);
+        Thread thread = new Thread(room);
+
+        if (Const.MACHINE != null) {
+            Const.MACHINE.stop();
+            ServerController.setGameIsStarted(false);
+        }
+
+        for (Player player : Const.PLAYER_LIST)
+            player.setReady(false);
+
+        thread.start();
     }
 
     private void setScore(String[] s) {

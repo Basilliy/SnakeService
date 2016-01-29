@@ -1,13 +1,29 @@
 package Project;
 
 
+import Project.GUI.RoomGUI;
+import Project.SentObjects.Player;
+
 import java.awt.*;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.ArrayList;
 
 public class Const {
+
+    public static ObjectOutputStream SERVER_OUT = null;
+    public static ObjectInputStream SERVER_IN = null;
+    public static MagicMachine MACHINE = null;
+    public static Player PLAYER = null;
+    public static boolean IS_SERVER = false;
+    public static ArrayList<Player> PLAYER_LIST = null;
+    public static RoomGUI ROOM = null;
+
     public static final int APPLE = -1;
     public static final int BEETLE = -20;
 
     public static final String CHAT = "#CHAT:";
+    public static final String WINNER = "#WINNER:";
     public static final String ERROR = "#ERROR:";
     public static final String START = "#START:";
     public static final String EXIT = "#EXIT:";
@@ -25,7 +41,7 @@ public class Const {
     public static final int TIMER = 500; // Время в миллисекундах
     public static final Point RESTRICTION = new Point(DELAY * 30, DELAY * 30); // Верхнее ограничение
     public static final int SIZE = RESTRICTION.x/DELAY;
-    public static final int VICTORY = 100; //Счет для победы
+    public static final int VICTORY = 10; //Счет для победы
 
     //Константы позиций на карте
     public static final int MAP_NOT_CHOSEN = 0;

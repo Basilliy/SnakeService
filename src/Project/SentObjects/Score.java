@@ -1,8 +1,12 @@
 package Project.SentObjects;
 
+import Project.Const;
 import Project.MagicMachine;
+import Project.Snake;
+import sun.text.resources.no.CollationData_no;
 
 import java.io.Serializable;
+import java.util.Arrays;
 
 public class Score implements Serializable {
     private int[] scores;
@@ -23,18 +27,7 @@ public class Score implements Serializable {
     }
 
     public String[] getScore() {
-        for (int i = 0; i < scores.length; i++) {
-            for (int j = 0; j < scores.length; j++) {
-                if (scores[i] > scores[j]) {
-                    int t1 = scores[i];
-                    scores[i] = scores[j];
-                    scores[j] = t1;
-                    String t2 = names[i];
-                    names[i] = names[j];
-                    names[j] = t2;
-                }
-            }
-        }
+        sort();
         String[] s = new String[scores.length];
         for (int i = 0; i < s.length; i++) {
             s[i] = scores[i] + " " + names[i];
@@ -63,5 +56,28 @@ public class Score implements Serializable {
             }
     }
 
+    public String getWinner() {
+        sort();
+        if (scores[0] >= Const.VICTORY) return names[0];
+        else {
+            int c = 0;
+            for (Snake snake : MagicMachine.snakes) if (snake.isAlive()) c++;
+            if (c == 1 || c == 0) return names[0];
+            else return null;
+        }
+    }
+
+    private void sort() {
+        for (int i = 0; i < scores.length; i++)
+            for (int j = 0; j < scores.length; j++)
+                if (scores[i] > scores[j]) {
+                    int t1 = scores[i];
+                    scores[i] = scores[j];
+                    scores[j] = t1;
+                    String t2 = names[i];
+                    names[i] = names[j];
+                    names[j] = t2;
+                }
+    }
 
 }
