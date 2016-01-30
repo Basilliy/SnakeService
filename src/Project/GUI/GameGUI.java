@@ -114,7 +114,7 @@ public class GameGUI extends JFrame implements Runnable {
                 e.printStackTrace();
             }
         }
-        System.exit(1);
+        new SelectRoomGUI(this);
     }
 
     @Override

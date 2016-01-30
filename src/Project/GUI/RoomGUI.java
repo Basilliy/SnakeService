@@ -26,6 +26,7 @@ public class RoomGUI extends JFrame implements Runnable {
     private JButton roomButtonReady;
     private JButton roomButtonStartGame;
     private JComboBox<String> roomComboBox;
+    private JButton buttonExit;
 
     private Player player;
     private ObjectOutputStream out;
@@ -64,6 +65,17 @@ public class RoomGUI extends JFrame implements Runnable {
             JOptionPane.showMessageDialog(RoomGUI.this, "Ошибка подключения");
             System.exit(0);
         }
+        buttonExit.addActionListener(e -> {
+            setVisible(false);
+            working = false;
+            new SelectRoomGUI(this);
+            try {
+                out.writeObject(Const.EXIT);
+                out.reset();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
         roomComboBox.addActionListener(e -> changePosition(roomComboBox.getSelectedIndex()));
         roomButtonStartGame.addActionListener(e -> createGame());
         roomButtonReady.addActionListener(e -> setReady());

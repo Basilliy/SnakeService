@@ -29,9 +29,9 @@ public class SelectRoomGUI extends JFrame{
     private Properties properties = new Properties();
 
 
-    public SelectRoomGUI() {
+    public SelectRoomGUI(JFrame owner) {
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        setLocationRelativeTo(null);
+        setLocationRelativeTo(owner);
         setMinimumSize(new Dimension(400, 390));
         setSize(new Dimension(400, 390));
         setContentPane(mainPanel);
@@ -221,6 +221,6 @@ public class SelectRoomGUI extends JFrame{
     }
 
     public static void main(String... console) throws Exception {
-        new SelectRoomGUI();
+        new SelectRoomGUI(null);
     }
 }
