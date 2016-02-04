@@ -28,6 +28,7 @@ public class Const {
     public static final String START = "#START:";
     public static final String EXIT = "#EXIT:";
     public static final String PATH_IMAGES = "src/Images/";
+    public static final String PATH_DATA = "src/Data/";
     public static final String PATH_CONFIG = "src/Data/Config.ini";
     public static final String CONFIG_NAME = "Name";
     public static final int PORT = 55000;

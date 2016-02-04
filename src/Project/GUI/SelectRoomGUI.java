@@ -221,6 +221,7 @@ public class SelectRoomGUI extends JFrame{
     }
 
     public static void main(String... console) throws Exception {
-        new SelectRoomGUI(null);
+//        new SelectRoomGUI(null);
+        new MenuGUI();
     }
 }
