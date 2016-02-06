@@ -33,10 +33,7 @@ public class ServerController extends Thread {
                 ObjectInputStream socketOIS = new ObjectInputStream(socket.getInputStream());
                 if (!gameIsStarted) {
                     if (b) {
-                        synchronized (oos) {
-                            oos.add(socketOOS);
-                            System.out.println("Size = " + oos.size());
-                        }
+                        synchronized (oos) { oos.add(socketOOS); }
                         ServerThread readerThread = new ServerThread(oos, socketOIS, socketOOS, players, ways);
                         readerThread.start();
                     } else {
@@ -58,9 +55,7 @@ public class ServerController extends Thread {
             gameIsStarted = b;
         }
 
-        if (gameIsStarted) {
-            Const.MACHINE = new MagicMachine(oos, players, ways);
-        }
+        if (gameIsStarted) Const.MACHINE = new MagicMachine(oos, players, ways);
     }
 }
 

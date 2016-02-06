@@ -28,6 +28,7 @@ public class GameGUI extends JFrame implements Runnable {
     private JLabel place8st;
     private JPanel notationForServer;
     private JButton buttonExit;
+    private JLabel labelLimit;
 
 
     private ObjectOutputStream out;
@@ -51,6 +52,7 @@ public class GameGUI extends JFrame implements Runnable {
     public GameGUI(Player player, ObjectOutputStream out, ObjectInputStream in,
                    boolean server, JFrame owner) {
         notationForServer.setVisible(server);
+        labelLimit.setText("Для победы: " + Const.VICTORY);
         this.out = out;
         this.in = in;
 
@@ -78,7 +80,7 @@ public class GameGUI extends JFrame implements Runnable {
         setFocusable(true);
         addKeyListener(new myKeyAdapter());
 
-//        setLocationRelativeTo(owner);
+        setLocationRelativeTo(owner);
         setTitle("SnakeService - " + player.getName());
         if (server) setSize(Const.RESTRICTION.x + 300, Const.RESTRICTION.y + 50);
         else setSize(Const.RESTRICTION.x + 160, Const.RESTRICTION.y + 50);

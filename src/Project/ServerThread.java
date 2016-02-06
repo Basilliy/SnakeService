@@ -49,8 +49,7 @@ public class ServerThread extends Thread {
                             }
                         }
                     }
-                } else
-                if (object.getClass().equals(Player.class)) {
+                } else if (object.getClass().equals(Player.class)) {
                     player = (Player) object;
                     if (bName) {
                         bName = false;

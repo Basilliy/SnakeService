@@ -3,6 +3,7 @@ package Project.GUI;
 import Project.Const;
 
 import javax.swing.*;
+import java.awt.*;
 import java.io.*;
 
 public class MenuGUI extends JFrame{
@@ -19,9 +20,11 @@ public class MenuGUI extends JFrame{
 
     private String howToSetup;
     private String howToPlay;
+    private Dimension menuSize = new Dimension(250, 200);
+    private Dimension instructionSize = new Dimension(400, 450);
 
     public MenuGUI() {
-        setSize(400, 450);
+        setSize(menuSize);
         setContentPane(mainPanel);
         setTitle("SnakeService");
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -61,5 +64,7 @@ public class MenuGUI extends JFrame{
     private void changeVisible() {
         instructionPanel.setVisible(!instructionPanel.isVisible());
         menuPanel.setVisible(!menuPanel.isVisible());
+        if (menuPanel.isVisible()) setSize(menuSize);
+        else setSize(instructionSize);
     }
 }

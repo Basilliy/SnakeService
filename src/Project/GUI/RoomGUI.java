@@ -27,6 +27,8 @@ public class RoomGUI extends JFrame implements Runnable {
     private JButton roomButtonStartGame;
     private JComboBox<String> roomComboBox;
     private JButton buttonExit;
+    private JLabel labelLimit;
+    private JSlider scoreLimitSlider;
 
     private Player player;
     private ObjectOutputStream out;
@@ -41,10 +43,14 @@ public class RoomGUI extends JFrame implements Runnable {
         setTitle(name);
         setContentPane(mainPanel);
         setMinimumSize(new Dimension(450, 500));
-        setSize(450, 500);
+        setSize(460, 500);
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         setLocationRelativeTo(owner);
         roomButtonStartGame.setVisible(server);
+        scoreLimitSlider.setVisible(server);
+
+        labelLimit.setText("Очков для победы: " + Const.VICTORY);
+
         roomComboBox.removeAllItems();
         roomComboBox.addItem(Const.STRING_NOT_CHOSEN);
         roomComboBox.addItem(Const.STRING_UP_LEFT);
@@ -76,6 +82,19 @@ public class RoomGUI extends JFrame implements Runnable {
                 e1.printStackTrace();
             }
         });
+
+        scoreLimitSlider.setMinimum(Const.VICTORY_MIN);
+        scoreLimitSlider.setMaximum(Const.VICTORY_MAX);
+        scoreLimitSlider.setValue(Const.VICTORY);
+        scoreLimitSlider.addChangeListener(e -> {
+            try {
+                out.writeObject(scoreLimitSlider.getValue());
+                out.reset();
+            } catch (IOException e1) {
+                e1.printStackTrace();
+            }
+        });
+
         roomComboBox.addActionListener(e -> changePosition(roomComboBox.getSelectedIndex()));
         roomButtonStartGame.addActionListener(e -> createGame());
         roomButtonReady.addActionListener(e -> setReady());
@@ -195,12 +214,10 @@ public class RoomGUI extends JFrame implements Runnable {
                 if (object.getClass().equals(Player.class)) {
                     player = (Player) object;
                     bottomLabel.setText(player.getName() + " (" + InetAddress.getLocalHost() + ")");
-                } else
-                if (object.getClass().equals(ArrayList.class)) {
+                } else if (object.getClass().equals(ArrayList.class)) {
                     players = (ArrayList<Player>) object;
                     updatePlayers();
-                } else
-                if (object.getClass().equals(String.class)) {
+                } else if (object.getClass().equals(String.class)) {
                     String s = (String) object;
                     if (s.startsWith(Const.START)) {//Если сообщение старта игры
                         startGame();
@@ -219,6 +236,9 @@ public class RoomGUI extends JFrame implements Runnable {
                             scrollBar.setValue(scrollBar.getMaximum());
                         }
                     }
+                } else if (object.getClass().equals(Integer.class)) {
+                    Const.VICTORY = (int) object;
+                    labelLimit.setText("Очков для победы: " + Const.VICTORY);
                 } else
                     System.out.println("RoomGUI: Not supported " + object.getClass());
                 Thread.yield();
