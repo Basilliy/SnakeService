@@ -40,7 +40,6 @@ public class GameGUI extends JFrame implements Runnable {
             [Const.RESTRICTION.y / Const.DELAY];
     private JLabel[] labels = new JLabel[8];
     private Image apple;
-    private Image body0;
     private Image[] body = new Image[8];
     private Image[] head = new Image[4];
     private Image[] beetle = new Image[4];
@@ -57,7 +56,6 @@ public class GameGUI extends JFrame implements Runnable {
         this.in = in;
 
         try {
-            body0 = ImageIO.read(new File(Const.PATH_IMAGES + "body.png"));
             apple = ImageIO.read(new File(Const.PATH_IMAGES + "apple.png"));
             head[0] = ImageIO.read(new File(Const.PATH_IMAGES + "headDown.png"));
             head[1] = ImageIO.read(new File(Const.PATH_IMAGES + "headLeft.png"));
@@ -197,7 +195,6 @@ public class GameGUI extends JFrame implements Runnable {
                                 case 64: image = body[5]; break;
                                 case 74: image = body[6]; break;
                                 case 84: image = body[7]; break;
-                                default: image = body0;
                             }
                         }
                     } else {

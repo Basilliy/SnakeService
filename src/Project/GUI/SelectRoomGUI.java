@@ -23,7 +23,7 @@ public class SelectRoomGUI extends JFrame{
     private JTextField textField;
     private JLabel bottomLabel;
 
-    private File rooms = new File("src/Data/Servers.txt");
+    private File rooms = new File(Const.PATH_DATA + "Servers.txt");
     private ArrayList<ListItem> list;
     private final static int PORT = Const.PORT;
     private Properties properties = new Properties();
@@ -102,7 +102,7 @@ public class SelectRoomGUI extends JFrame{
         } catch (FileNotFoundException e) {
             try {
                 if (!rooms.createNewFile()) JOptionPane.showMessageDialog(SelectRoomGUI.this,
-                        "Отсутствует путь src/Data");
+                        "Отсутствует путь Data");
             } catch (IOException e1) { /*Nothing TO DO */ }
         } catch (IOException e) { /*Nothing TO DO */ }
     }
